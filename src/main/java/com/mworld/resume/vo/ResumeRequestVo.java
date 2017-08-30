@@ -11,6 +11,7 @@ public class ResumeRequestVo extends Resume {
     private Date from;
     private Date to;
     private Integer dptId;
+    private Integer proId;
     private String keyword;
 
     public Date getFrom() {
@@ -35,6 +36,14 @@ public class ResumeRequestVo extends Resume {
 
     public void setDptId(Integer dptId) {
         this.dptId = dptId;
+    }
+
+    public Integer getProId() {
+        return proId;
+    }
+
+    public void setProId(Integer proId) {
+        this.proId = proId;
     }
 
     public String getKeyword() {

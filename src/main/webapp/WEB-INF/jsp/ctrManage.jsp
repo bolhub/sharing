@@ -33,7 +33,7 @@
             display: inline-block;
             width: 72px;
             height: 72px;
-            background: url("<%=basePath%>css/images/png/group_x72.png") no-repeat;
+            background: url("<%=basePath%>css/images/png/goverment_72px.png") no-repeat;
             background-size: 72px 72px;
         }
 
@@ -42,11 +42,26 @@
         }
 
         #worker-center .roadmap-ico {
-            background: url("<%=basePath%>css/images/png/worker_x72.png") no-repeat;
+            background: url("<%=basePath%>css/images/png/man_72px.png") no-repeat;
         }
 
         .roadmap-item:hover {
+            animation: border-state 0.5s linear;
             border: 3px solid rgba(23, 44, 22, 0.2);
+            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.4) inset, 0px 0px 4px rgba(225, 225, 225, 0.1);
+        }
+
+        @-webkit-keyframes border-state {
+            from {
+                border: 3px solid transparent;
+                /*box-shadow: 0px 0px 7px rgba(225, 225, 225, 0.1);*/
+                box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2) inset, 0px 0px 6px rgba(225, 225, 225, 0.3);
+            }
+            to {
+                border: 3px solid rgba(23, 44, 22, 0.2);
+                /*box-shadow: 0px 0px 4px;*/
+                box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.4) inset, 0px 0px 4px rgba(225, 225, 225, 0.1);
+            }
         }
 
         .roadmap-item.active {
@@ -120,9 +135,9 @@
             bottom: 4px;
         }
 
-        .worker-list-item{
+        .worker-list-item {
             display: inline-block;
-            width: calc(25% - 12px);
+            width: calc(12.5% - 12px);
             margin: 5px;
             padding: 5px;
             border: 1px solid rgba(7, 8, 8, 0.18);
@@ -130,10 +145,12 @@
             -moz-border-radius: 5px;
             border-radius: 5px;
         }
-        .worker-list-item p span:first-child{
+
+        .worker-list-item p span:first-child {
             margin-left: 5px;
         }
-        .worker-list-item p span:last-child{
+
+        .worker-list-item p span:last-child {
             display: inline-block;
             width: calc(100% - 20px);
             text-align: center;
@@ -141,16 +158,79 @@
             overflow: hidden;
         }
 
-        .worker-list-item:hover{
+        .worker-list-item:hover {
             border: 1px solid cadetblue;
         }
-        .worker-list-item.select{
+
+        .worker-list-item.select {
             border: 1px solid cadetblue;
             background: rgba(53, 157, 160, 0.39);
         }
-        .box.worker-page-box{
+
+        .box.worker-page-box {
             position: relative;
             left: calc(100% - 300px);
+        }
+
+        .roadmap-item{
+            position: relative;
+        }
+        .roadmap-item .glyphicon-edit {
+            display: none;
+            font-size: xx-small;
+        }
+
+        .roadmap-item .glyphicon-edit:hover {
+            color: #995048;
+        }
+
+        .roadmap-item:hover .glyphicon-edit {
+            display: inline-block;
+            animation: del-action 0.5s;
+        }
+
+        @-webkit-keyframes del-action {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @-moz-keyframes del-action {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @-ms-keyframes del-action {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @-o-keyframes del-action {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        #wkAddMod .modal-dialog{
+            width: 80%;
+        }
+
+        #wkAddMod .glyphicon{
+            color: #00a2d4;
         }
 
     </style>
@@ -239,7 +319,7 @@
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control keyword-input"
                                placeholder="姓名、学历、专业、人员属地">
-                <span class="input-group-addon resume-search-btn">
+                        <span class="input-group-addon resume-search-btn">
                     <span class="glyphicon glyphicon-search"></span>
                 </span>
                     </div>

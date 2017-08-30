@@ -23,7 +23,7 @@ public interface ResumeService {
 
     public Integer findResumeDetailCnt(ResumeRequestVo options);
 
-    public List<ResumeMapVo> findAllowResumes(ResumeMapVo options, Integer start, Integer size);
+    public List<ResumeMapVo> findAllowResumes(ResumeRequestVo options, Integer start, Integer size);
 
-    public Integer findAllowResumesCnt(ResumeMapVo options);
+    public Integer findAllowResumesCnt(ResumeRequestVo options);
 }

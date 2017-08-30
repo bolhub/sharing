@@ -107,6 +107,7 @@ var ctrFn = {
         $("#search").hide();
         $(".tar-center .panel-title .glyphicon-search").unbind().bind("click", function () {
             $("#search").find("strong").text($(this).attr("search-content"));
+            $("#search").find("[type='search']").attr("placeholder", "搜索" + $(this).attr("search-content")).focus();
             ctrFn.opt.searchType = $(this).attr("search-content");
             $("#search").show(500);
         })
@@ -174,7 +175,7 @@ var ctrFn = {
                     ctrFn.ctrPage.cnt = result.target.counts;
                     for (var i = 0; i < list.length; i++) {
                         $("#ctr-center .panel-body").append('<div class="roadmap-item" ctrId="' + list[i].id + '" ctrName="' + list[i].dptName + '">\n' +
-                            '            <span class="roadmap-ico"></span>\n' +
+                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
                             // '            <span class="glyphicon glyphicon-minus pull-right"></span>\n' +
                             '            <span class="roadmap-title">' + list[i].dptName + '</span>\n' +
                             '        </div>');
@@ -189,6 +190,12 @@ var ctrFn = {
                         })
                         ctrFn.ctrPage.flag = false;
                     }
+
+                    $(".glyphicon-edit").unbind().bind("click", function () {
+                        event.stopPropagation();
+                        // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
+                        tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input type="text" class="form-control"/></div>'});
+                    })
 
                     $("#ctr-center .roadmap-item").unbind().bind("click", function () {
                         if (!$(this).hasClass("active")) {
@@ -229,7 +236,7 @@ var ctrFn = {
                     ctrFn.proPage.cnt = result.target.counts;
                     for (var i = 0; i < list.length; i++) {
                         $("#pro-center .panel-body").append('<div class="roadmap-item" pCtrId="' + id + '" iProId="' + list[i].id + '" iProName="' + list[i].proName + '">\n' +
-                            '            <span class="roadmap-ico"></span>\n' +
+                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
                             '            <span class="roadmap-title">' + list[i].proName + '</span>\n' +
                             '        </div>')
                     }
@@ -280,7 +287,7 @@ var ctrFn = {
                     ctrFn.resPage.cnt = result.target.counts;
                     for (var i = 0; i < list.length; i++) {
                         $("#worker-center .panel-body").append('<div class="roadmap-item" resumeId="' + list[i].id + '">\n' +
-                            '            <span class="roadmap-ico"></span>\n' +
+                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
                             '            <span class="roadmap-title">' + list[i].owner + '</span>\n' +
                             '        </div>')
                     }
@@ -331,7 +338,7 @@ var ctrFn = {
                     ctrId: ctrFn.opt.ctrId,
                     proId: ctrFn.opt.proId,
                     start: start ? start : 1,
-                    size: size ? size : 12
+                    size: size ? size : 16
                 },
                 success: function (data) {
                     var result = JSON.parse(data);
@@ -340,9 +347,11 @@ var ctrFn = {
                         ctrFn.resPage.cellCnt = result.target.counts;
                         for (var i = 0; i < result.target.data.length; i++) {
                             $("#wkAddMod").find(".worker-list").append('<div class="worker-list-item" wkId="' + result.target.data[i].id + '">\n' +
-                                '                        <p><span class="glyphicon glyphicon-user"></span><span>' + result.target.data[i].owner + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-magnet"></span><span>' + result.target.data[i].education + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-tower"></span><span>' + result.target.data[i].major + '</span></p>\n' +
+                                '                        <p><span class="glyphicon glyphicon-user" title="姓名"></span><span>' + result.target.data[i].owner + '</span></p>\n' +
+                                '                        <p><span class="glyphicon glyphicon-magnet" title="学历"></span><span>' + result.target.data[i].education + '</span></p>\n' +
+                                '                        <p><span class="glyphicon glyphicon-tower" title="专业"></span><span title="' + result.target.data[i].major + '">' + result.target.data[i].major + '</span></p>\n' +
+                                '                        <p><span class="glyphicon glyphicon-time" title="毕业时间"></span><span>' + util.formatDate(result.target.data[i].graduateTime, true) + '</span></p>\n' +
+                                '                        <p><span class="glyphicon glyphicon-home" title="归属地"></span><span title="' + result.target.data[i].dptName + '">' + result.target.data[i].dptName + '</span></p>\n' +
                                 '                    </div>')
                         }
 
@@ -359,7 +368,7 @@ var ctrFn = {
                                 prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
                                 next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
                                 last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
-                                pageSize: 12,
+                                pageSize: 16,
                                 visiblePages: 3
                             }, function () {
                                 ctrFn.addWorker(ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
@@ -479,6 +488,10 @@ $(function () {
         if (e.keyCode == 13 && $("#search input").is(":focus"))
             ctrFn.searchByKeyword();
     });
+
+    $(".glyphicon-edit").unbind().bind("click", function () {
+        alert("aaa")
+    })
 })
 
 

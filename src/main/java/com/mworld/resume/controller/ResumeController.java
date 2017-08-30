@@ -180,8 +180,8 @@ public class ResumeController extends BaseController {
         String dptId = request.getParameter("ctrId");
         String proId = request.getParameter("proId");
         Integer start = StringUtils.isEmpty(request.getParameter("start")) ? 1 : Integer.valueOf(request.getParameter("start"));
-        Integer size = StringUtils.isEmpty(request.getParameter("size")) ? 12 : Integer.valueOf(request.getParameter("size"));
-        ResumeMapVo options = new ResumeMapVo();
+        Integer size = StringUtils.isEmpty(request.getParameter("size")) ? 16 : Integer.valueOf(request.getParameter("size"));
+        ResumeRequestVo options = new ResumeRequestVo();
         if (!StringUtils.isEmpty(dptId))
             options.setDptId(Integer.valueOf(dptId.trim()));
         if (!StringUtils.isEmpty(proId))

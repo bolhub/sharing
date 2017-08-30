@@ -56,6 +56,17 @@ var tip = {
     }
 }
 
+var util= {
+    formatDate: function (tm, endMonth) {
+        var date = new Date(parseInt(tm));
+        var month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)
+        var day = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+        if (endMonth)
+            return  month + "/" + date.getFullYear();
+        return date.getFullYear() + "-" + month + "-" + day;
+    }
+}
+
 $(function () {
     $("#tipBox").hide();
 })

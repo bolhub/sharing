@@ -187,6 +187,7 @@
         r.owner,
         r.major,
         r.education,
+        r.graduate_time `graduateTime`,
         d.dpt_name `dptName`
         from resume r
         left join department d on d.id=r.dpt_id

@@ -116,6 +116,19 @@ jQuery(function () {
             uploader.upload();
         }
     });
+
+    function closeUploader() {
+        for (var i = 0; i < uploader.getFiles().length; i++) {
+            uploader.removeFile(uploader.getFiles()[i])
+        }
+        var $li = $("#" + uploader.getFiles()[i].id);
+        $li.off().remove();
+        setStatus('pedding');
+        fileCount = 0;
+        fileSize = 0;
+        uploader.reset();
+        updateStatus();
+    }
 });
 
 function fillResumeInfo() {

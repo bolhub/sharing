@@ -16,10 +16,8 @@ public class ResumeMapVo extends Resume {
 //        this.dps = dps;
 //    }
     private Integer dptId;
-    private Integer proId;
     private String dptName;
     private String proName;
-    private String keyword;
 
     public Integer getDptId() {
         return dptId;
@@ -27,14 +25,6 @@ public class ResumeMapVo extends Resume {
 
     public void setDptId(Integer dptId) {
         this.dptId = dptId;
-    }
-
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
     }
 
     public String getDptName() {
@@ -51,13 +41,5 @@ public class ResumeMapVo extends Resume {
 
     public void setProName(String proName) {
         this.proName = proName;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
     }
 }
