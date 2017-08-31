@@ -194,7 +194,7 @@ var ctrFn = {
                         ctrFn.ctrPage.flag = false;
                     }
 
-                    $(".glyphicon-edit").unbind().bind("click", function () {
+                    $("#ctr-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
                         var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("ctrId");
                         // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
@@ -283,7 +283,7 @@ var ctrFn = {
 
                         ctrFn.proPage.flag = false;
                     }
-                    $(".glyphicon-edit").unbind().bind("click", function () {
+                    $("#pro-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
                         var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("pCtrId");
                         var proId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("iProId");
@@ -365,7 +365,7 @@ var ctrFn = {
                         })
                         ctrFn.resPage.flag = false;
                     }
-                    $(".glyphicon-edit").unbind().bind("click", function () {
+                    $("#worker-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
                         var workerId = $(this).parent(".roadmap-ico").parent(".roadmap-item").attr("resumeId");
                         tip.tipMod({mod: "modify"}, function () {
