@@ -286,7 +286,7 @@
     <span class="input-group-addon btn btn-default"><span class="glyphicon glyphicon-search"></span></span>
 </div>
 
-<div id="alertModal" class="modal fad" tabindex="-1" role="alertdialog" aria-hidden="true">
+<div id="alertModal" class="modal fade" tabindex="-1" role="alertdialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -335,6 +335,8 @@
         </div>
     </div>
 </div>
+
+<jsp:include page="./modify.jsp"></jsp:include>
 
 </body>
 <script type="text/javascript" src="<%=basePath%>js/jqPaginator.js"></script>

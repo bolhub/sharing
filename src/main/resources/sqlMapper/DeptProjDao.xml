@@ -159,4 +159,20 @@
     <select id="findDptPrjId" resultType="int">
         SELECT id from dpt_prj_mid where dpt_id=#{dptId} and prj_id=#{proId}
     </select>
+
+    <update id="changeDptName">
+        UPDATE department set dpt_name=#{dptName} WHERE id=#{dptId}
+    </update>
+
+    <update id="changeProName">
+        UPDATE project set pro_name=#{proName} where id=#{proId}
+    </update>
+
+    <update id="changeDptProShip">
+        UPDATE dpt_prj_mid m set m.prj_id=#{newProId} where dpt_id=#{dptId} and prj_id=#{oldProId}
+    </update>
+
+    <select id="findExistOtherDpt" resultType="int">
+        SELECT count(1) from dpt_prj_mid where prj_id=#{proId} and dpt_id!=#{dptId}
+    </select>
 </mapper>

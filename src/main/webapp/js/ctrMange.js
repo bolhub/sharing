@@ -14,7 +14,10 @@ var ctrFn = {
         dptAdd: host + 'organize/dpt/add',
         proAdd: host + 'organize/pro/add',
         getResumes: host + 'resume/findResums',
-        resumeAdd: host + 'organize/createShip'
+        resumeAdd: host + 'organize/createShip',
+        ctrRename: host + "organize/dpt/rename",
+        proRename: host + "organize/pro/rename",
+        resumeDetail: host + "resume/resumeDetail"
     },
     initMsgBox: function (init) {
         var $modal = init && init.modelId ? $("#" + init.modelId) : $("#alertModal");
@@ -193,8 +196,36 @@ var ctrFn = {
 
                     $(".glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
+                        var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("ctrId");
                         // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
-                        tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input type="text" class="form-control"/></div>'});
+                        tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
+                            tip.mod.find("#sure-btn").unbind().bind("click", function () {
+                                var changeName = tip.mod.find("[name='changeName']").val();
+                                if (changeName) {
+                                    $.ajax({
+                                        url: ctrFn.url.ctrRename,
+                                        type: 'post',
+                                        data: {ctrId: ctrId, newName: changeName},
+                                        success: function (data) {
+                                            var result = data ? JSON.parse(data) : null;
+                                            if (result && result.success) {
+                                                tip.tipBox({text: "修改成功，请刷新后查看"}, true);
+                                                tip.mod.modal('hide');
+                                            } else {
+                                                tip.tipBox({type: "warn", text: "修改失败"}, true);
+                                                tip.mod.modal('hide');
+                                            }
+
+                                        },
+                                        error: function () {
+                                            tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
+                                            tip.mod.modal('hide');
+                                        }
+                                    })
+                                }
+                            });
+                        })
+
                     })
 
                     $("#ctr-center .roadmap-item").unbind().bind("click", function () {
@@ -252,6 +283,41 @@ var ctrFn = {
 
                         ctrFn.proPage.flag = false;
                     }
+                    $(".glyphicon-edit").unbind().bind("click", function () {
+                        event.stopPropagation();
+                        var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("pCtrId");
+                        var proId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("iProId");
+                        // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
+                        tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
+                            tip.mod.find("#sure-btn").unbind().bind("click", function () {
+                                var changeName = tip.mod.find("[name='changeName']").val();
+                                if (changeName) {
+                                    $.ajax({
+                                        url: ctrFn.url.proRename,
+                                        type: 'post',
+                                        data: {ctrId: ctrId, proId: proId, newName: changeName},
+                                        success: function (data) {
+                                            var result = data ? JSON.parse(data) : null;
+                                            if (result && result.success) {
+                                                tip.tipBox({text: "修改成功，请刷新后查看"}, true);
+                                                tip.mod.modal('hide');
+                                            } else {
+                                                tip.tipBox({type: "warn", text: "修改失败"}, true);
+                                                tip.mod.modal('hide');
+                                            }
+
+                                        },
+                                        error: function () {
+                                            tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
+                                            tip.mod.modal('hide');
+                                        }
+                                    })
+                                }
+                            });
+                        })
+
+                    })
+
                     $("#pro-center .roadmap-item").unbind().bind("click", function () {
                         $(this).addClass("active").siblings(".roadmap-item").removeClass("active");
                         $("#worker-center .process:eq(1)").text(">>" + $(this).attr("iProName"));
@@ -299,6 +365,35 @@ var ctrFn = {
                         })
                         ctrFn.resPage.flag = false;
                     }
+                    $(".glyphicon-edit").unbind().bind("click", function () {
+                        event.stopPropagation();
+                        var workerId = $(this).parent(".roadmap-ico").parent(".roadmap-item").attr("resumeId");
+                        tip.tipMod({mod: "modify"}, function () {
+                            tip.mod.find("input").attr("readonly", "readonly");
+                            $.ajax({
+                                url: ctrFn.url.resumeDetail,
+                                type: 'POST',
+                                data: {workerId: workerId},
+                                success: function (data) {
+                                    var result = data ? JSON.parse(data) : null;
+                                    if (result && result.success && result.target) {
+                                        var info = result.target;
+                                        tip.mod.find(".form-group").eq(0).find("input").eq(0).val(info.owner)
+                                        tip.mod.find(".form-group").eq(1).find("input").eq(0).val(info.education)
+                                        tip.mod.find(".form-group").eq(2).find("input[name='major']").val(info.major)
+                                        tip.mod.find(".form-group").eq(3).find("input").eq(0).val(util.formatDate(info.graduateTime, true))
+                                        tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName)
+                                        $(".major-select").searchableSelect();
+                                    }
+                                }
+                            })
+
+
+                            tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
+                                $(this).prev("input").removeAttr("readonly").focus();
+                            })
+                        })
+                    })
                 } else {
                     $("#worker-center .panel-body").text("未查询到数据");
                 }
@@ -488,10 +583,6 @@ $(function () {
         if (e.keyCode == 13 && $("#search input").is(":focus"))
             ctrFn.searchByKeyword();
     });
-
-    $(".glyphicon-edit").unbind().bind("click", function () {
-        alert("aaa")
-    })
 })
 
 

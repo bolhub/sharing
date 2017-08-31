@@ -53,4 +53,8 @@ public interface DeptProjService {
     public Integer saveResProShip(Integer dptId, Integer proId, String[] resumes);
 
     public Integer findDptPrjId(Integer dptId, Integer proId);
+
+    public Integer changeDptName(Integer dptId, String dptName);
+
+    public Integer changeProName(Integer dptId, Integer proId, String proName);
 }

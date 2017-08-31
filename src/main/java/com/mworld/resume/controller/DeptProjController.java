@@ -240,4 +240,33 @@ public class DeptProjController extends BaseController {
         }
         responseMsg(response, new Message(true, NoticeConst.DATA_SAVE_SUCCESS));
     }
+
+    @RequestMapping(value = "{opt}/rename", method = RequestMethod.POST)
+    @ResponseBody
+    public void rename(HttpServletRequest request, HttpServletResponse response, @PathVariable("opt") String opt){
+        Integer dptId = StringUtils.isEmpty(request.getParameter("ctrId")) ? null : Integer.valueOf(request.getParameter("ctrId").trim());
+        String newName = request.getParameter("newName");
+        if (dptId == null || StringUtils.isEmpty(newName)){
+            responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+            return;
+        }
+        Integer updateCnt = null;
+        switch (opt){
+            case "dpt":
+                updateCnt = deptProjService.changeDptName(dptId, newName);
+                break;
+            case "pro":
+                Integer proId = StringUtils.isEmpty(request.getParameter("proId")) ? null : Integer.valueOf(request.getParameter("proId").trim());
+                updateCnt = deptProjService.changeProName(dptId, proId, newName);
+                break;
+                default:
+                    responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+                    return;
+        }
+        if (updateCnt != null && updateCnt > 0){
+            responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
+            return;
+        }
+        responseMsg(response, new Message(false, NoticeConst.UPDATE_FAIL));
+    }
 }

@@ -61,13 +61,21 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public List<ResumeMapVo> findAllowResumes(ResumeRequestVo options, Integer start, Integer size) {
         PageUtil pageUtil = new PageUtil(start, size);
         return resumeDao.findAllowResumes(options, pageUtil.getStart(), pageUtil.getSize());
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public Integer findAllowResumesCnt(ResumeRequestVo options) {
         return resumeDao.findAllowResumesCnt(options);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public ResumeMapVo findResumeById(String id) {
+        return resumeDao.findResumeById(id);
     }
 }

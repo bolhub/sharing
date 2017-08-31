@@ -23,4 +23,6 @@ public interface ResumeDao {
     public List<ResumeMapVo> findAllowResumes(@Param("options") ResumeRequestVo options, @Param("start") Integer start, @Param("size") Integer size);
 
     public Integer findAllowResumesCnt(@Param("options") ResumeRequestVo options);
+
+    public ResumeMapVo findResumeById(@Param("id") String id);
 }

@@ -52,4 +52,12 @@ public interface DeptProjDao {
     public Integer saveResProShip(@Param("dptPrjId") Integer dptPrjId, @Param("resumes") String[] resumes);
 
     public Integer findDptPrjId(@Param("dptId") Integer dptId, @Param("proId") Integer proId);
+
+    public Integer changeDptName(@Param("dptId") Integer dptId, @Param("dptName") String dptName);
+
+    public Integer changeProName(@Param("proId") Integer proId, @Param("proName") String proName);
+
+    public Integer changeDptProShip(@Param("dptId") Integer dptId, @Param("oldProId") Integer oldProId, @Param("newProId") Integer newProId);
+
+    public Integer findExistOtherDpt(@Param("dptId") Integer dptId, @Param("proId") Integer proId);
 }

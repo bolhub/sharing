@@ -152,7 +152,7 @@
         limit #{start},#{size};
     </select>
 
-    <select id="findResumeDetailCnt" parameterType="com.mworld.resume.vo.ResumeRequestVo"  resultType="int">
+    <select id="findResumeDetailCnt" parameterType="com.mworld.resume.vo.ResumeRequestVo" resultType="int">
         select
         count(1)
         from resume r
@@ -181,7 +181,8 @@
         </where>
     </select>
 
-    <select id="findAllowResumes" parameterType="com.mworld.resume.vo.ResumeRequestVo" resultType="com.mworld.resume.vo.ResumeMapVo">
+    <select id="findAllowResumes" parameterType="com.mworld.resume.vo.ResumeRequestVo"
+            resultType="com.mworld.resume.vo.ResumeMapVo">
         select
         r.id,
         r.owner,
@@ -220,5 +221,25 @@
             OR r.major LIKE concat('%', concat(#{options.keyword},'%'))
             OR d.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
         </if>
+    </select>
+
+    <select id="findResumeById" resultType="com.mworld.resume.vo.ResumeMapVo">
+        select
+        r.id,
+        r.owner,
+        r.major,
+        r.education,
+        r.file_name `fileName`,
+        r.file_type `fileType`,
+        r.file_path `filePath`,
+        r.dest_name `destName`,
+        r.uploader_id `uploaderId`,
+        r.upload_time `uploadTime`,
+        r.graduate_time `graduateTime`,
+        d.dpt_name `dptName`
+        from resume r
+        left join department d
+        on r.dpt_id=d.id
+        where r.id=#{id}
     </select>
 </mapper>

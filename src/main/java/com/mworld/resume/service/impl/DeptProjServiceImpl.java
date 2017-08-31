@@ -170,4 +170,30 @@ public class DeptProjServiceImpl implements DeptProjService {
     public Integer findDptPrjId(Integer dptId, Integer proId) {
         return deptProjDao.findDptPrjId(dptId, proId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Integer changeDptName(Integer dptId, String dptName) {
+        return deptProjDao.changeDptName(dptId, dptName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Integer changeProName(Integer dptId, Integer proId, String proName) {
+        Integer existShip = deptProjDao.findExistOtherDpt(dptId, proId);
+        if (existShip != null && existShip > 1) {
+            Integer tarId = deptProjDao.findProIdByName(proName);
+            if (tarId != null && tarId > 0) {
+                return deptProjDao.changeDptProShip(dptId, proId, tarId);
+            } else {
+                Project project = new Project(proName);
+                Integer cnt = deptProjDao.savePro(project);
+                if (cnt != null && cnt > 0) {
+                    return deptProjDao.changeDptProShip(dptId, proId, project.getId());
+                }
+                return null;
+            }
+        }
+        return deptProjDao.changeProName(proId, proName);
+    }
 }

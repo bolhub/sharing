@@ -64,7 +64,7 @@
             <label class="col-lg-3 control-label">毕业时间</label>
             <div class="col-lg-2"><input name="resumeGraduate" type="date" class="form-control"></div>
         </div>
-        <div class="form-group"><label class="col-lg-3 control-label">所属单位</label>
+        <div class="form-group"><label class="col-lg-3 control-label">单位编制</label>
             <div class="col-lg-5">
                 <select name="resumeDpt">
                     <option>测试</option>

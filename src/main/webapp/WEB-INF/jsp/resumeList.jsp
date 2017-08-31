@@ -76,9 +76,9 @@
             <td width="8%">专业</td>
             <td width="8%">毕业时间</td>
             <td width="8%">上传时间</td>
-            <td width="10%">人员属地</td>
+            <td width="10%">人员编制</td>
             <td width="10%">项目名称</td>
-            <td width="10%">项目属地</td>
+            <td width="10%">项目编制</td>
             <td width="5%">操作</td>
         </tr>
         </thead>

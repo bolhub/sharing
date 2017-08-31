@@ -10,6 +10,10 @@ public class NoticeConst {
 
     public final static String DATA_SAVE_FAIL = "Data insertion failed!";
 
+    public final static String UPDATE_SUCCESS = "Update succeed!";
+
+    public final static String UPDATE_FAIL = "Update failed!";
+
     public final static String INFO_INCOMPLETE = "Incomplete information";
 
     public final static String NO_LOGIN_USER = "No user login!";

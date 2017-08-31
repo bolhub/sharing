@@ -39,7 +39,6 @@ public class ResumeController extends BaseController {
 
     @RequestMapping(value = "uploadResume", method = {RequestMethod.POST, RequestMethod.GET})
     public void upload(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("------------------------------------------------------------");
         uploadOpt(request, RESUME_DOC_UPLOAD_PATH);
     }
 
@@ -203,6 +202,21 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(new ResponseVo<>(list, cnt), true, NoticeConst.GET_DATA_NOTICE));
     }
 
-
+    @RequestMapping(value = "resumeDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public void resumeDetail(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("workerId");
+        if (StringUtils.isEmpty(id)){
+            responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+            return;
+        }
+        ResumeMapVo resume = resumeService.findResumeById(id.trim());
+        if (Objects.isNull(resume)){
+            responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
+            return;
+        }
+        response.setContentType("text/html;charset=UTF-8");
+        responseMsg(response, new Message(resume, true, NoticeConst.GET_DATA_NOTICE));
+    }
 }
 

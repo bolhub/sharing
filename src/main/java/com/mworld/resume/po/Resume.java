@@ -6,10 +6,8 @@ public class Resume {
     private String id;
     private String owner;
     private String major;
-    private String ctrName;
     private Date graduateTime;
     private String education;
-    private String company;
     private String fileName;
     private String fileType;
     private String filePath;
@@ -105,19 +103,4 @@ public class Resume {
         this.major = major;
     }
 
-    public String getCtrName() {
-        return ctrName;
-    }
-
-    public void setCtrName(String ctrName) {
-        this.ctrName = ctrName;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
 }

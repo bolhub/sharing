@@ -1,29 +1,30 @@
 var tip = {
+    mod: null,
     tipMod: function (init,callback) {
-        var $mod = init && init.mod ? $("#" + init.mod) : $("#tipMod");
+        tip.mod = init && init.mod ? $("#" + init.mod) : $("#tipMod");
         if (init) {
             if (init.title)
-                $mod.find(".modal-title").html(init.title);
+                tip.mod.find(".modal-title").html(init.title);
             if (init.text)
-                $mod.find(".modal-body").html(init.text);
+                tip.mod.find(".modal-body").html(init.text);
             if (init.closeBtnName)
-                $mod.find(".close-btn").text(init.closeBtnName);
+                tip.mod.find(".close-btn").text(init.closeBtnName);
             if (init.closeBtnHide)
-                $mod.find(".close-btn").hide();
+                tip.mod.find(".close-btn").hide();
             if (init.sureBtnName)
-                $mod.find(".sure-btn").text(init.sureBtnName);
+                tip.mod.find(".sure-btn").text(init.sureBtnName);
             if (init.sureBtnHide)
-                $mod.find(".sure-btn").hide();
+                tip.mod.find(".sure-btn").hide();
         }
         if (typeof callback == "function")
             callback();
-        $mod.modal();
+        tip.mod.modal();
     },
     tipBox: function (init, autoClose) {
-        var $mod = init && init.mod ? $("#" + init.mod) : $("#tipBox");
+        var $box = init && init.mod ? $("#" + init.mod) : $("#tipBox");
         var type = init && init.type ? init.type : "info";
-        var $mark = $mod.find(".panel-title").find("span").eq(0);
-        var $title = $mod.find(".panel-title").find("strong").eq(0);
+        var $mark = $box.find(".panel-title").find("span").eq(0);
+        var $title = $box.find(".panel-title").find("strong").eq(0);
         switch (type) {
             case 'info':
                 $mark.removeClass().addClass("glyphicon glyphicon-info-sign");
@@ -40,17 +41,17 @@ var tip = {
         }
         if (init) {
             if (init.title)
-                $mod.find(".panel-title").find("strong").html(init.title);
+                $box.find(".panel-title").find("strong").html(init.title);
             if (init.text)
-                $mod.find(".panel-body").html(init.text);
+                $box.find(".panel-body").html(init.text);
         }
-        $mod.show(500);
-        $mod.find(".close").unbind().bind("click", function () {
-            $mod.hide(500)
+        $box.show(500);
+        $box.find(".close").unbind().bind("click", function () {
+            $box.hide(500)
         })
         if (autoClose) {
             setTimeout(function () {
-                $mod.hide(500);
+                $box.hide(500);
             }, 5000);
         }
     }
