@@ -61,7 +61,7 @@
                     <%--</div>--%>
                     <div class="form-group"><label class="control-label col-lg-3">专业</label>
                         <div class="col-lg-5">
-                            <div class="radio">
+                            <div class="radio" readonly>
                                 <label><input type="radio" name="major" value="计算机">计算机</label>
                             </div>
                             <div class="radio">
@@ -70,7 +70,8 @@
                             <div class="radio">
                                 <label><input type="radio" name="major" value="其它">其它</label>
                             </div>
-                            <span class="glyphicon glyphicon-pencil pull-right"></span></div>
+                            <%--<span class="glyphicon glyphicon-pencil pull-right"></span>--%>
+                        </div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">毕业时间</label>
                         <div class="col-lg-5"><input type="text" class="form-control"><span

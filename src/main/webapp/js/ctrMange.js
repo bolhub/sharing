@@ -380,7 +380,7 @@ var ctrFn = {
                                         var info = result.target;
                                         tip.mod.find(".form-group").eq(0).find("input").eq(0).val(info.owner)
                                         tip.mod.find(".form-group").eq(1).find("input").eq(0).val(info.education)
-                                        tip.mod.find(".form-group").eq(2).find("input[name='major']").val(info.major)
+                                        tip.mod.find(".form-group").eq(2).find("input[name='major'][value=" + info.major + "]").attr("checked", "checked")
                                         tip.mod.find(".form-group").eq(3).find("input").eq(0).val(util.formatDate(info.graduateTime, true))
                                         tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName)
                                         $(".major-select").searchableSelect();
