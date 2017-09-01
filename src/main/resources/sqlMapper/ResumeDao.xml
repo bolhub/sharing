@@ -236,6 +236,7 @@
         r.uploader_id `uploaderId`,
         r.upload_time `uploadTime`,
         r.graduate_time `graduateTime`,
+        r.dpt_id `dptId`,
         d.dpt_name `dptName`
         from resume r
         left join department d

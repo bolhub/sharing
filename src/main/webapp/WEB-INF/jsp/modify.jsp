@@ -50,17 +50,29 @@
                     <div class="form-group"><label class="control-label col-lg-3">姓名</label>
                         <div class="col-lg-5"><input type="text" class="form-control"><span
                                 class="glyphicon glyphicon-pencil pull-right"></span></div>
+                        <div class="col-lg-5 update-tar" hidden><input type="text" class="form-control"></div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">学历</label>
-                        <div class="col-lg-5"><input type="text" class="form-control"><span
-                                class="glyphicon glyphicon-pencil pull-right"></span></div>
+                        <div class="col-lg-5">
+                            <input type="text" class="form-control">
+                            <span class="glyphicon glyphicon-pencil pull-right"></span>
+                        </div>
+                        <div class="col-lg-5 update-tar" hidden>
+                            <select>
+                                <option value="本科">本科</option>
+                                <option value="大专">大专</option>
+                                <option value="高中">高中</option>
+                                <option value="中专">中专</option>
+                                <option value="初中">初中</option>
+                            </select>
+                        </div>
                     </div>
-                    <%--<div class="form-group"><label class="control-label col-lg-3">专业</label>--%>
-                        <%--<div class="col-lg-5"><input type="text" class="form-control">--%>
-                            <%--<span class="glyphicon glyphicon-pencil pull-right"></span></div>--%>
-                    <%--</div>--%>
                     <div class="form-group"><label class="control-label col-lg-3">专业</label>
                         <div class="col-lg-5">
+                            <input type="text" class="form-control">
+                            <span class="glyphicon glyphicon-pencil pull-right"></span>
+                        </div>
+                        <div class="col-lg-5 update-tar" hidden>
                             <div class="radio" readonly>
                                 <label><input type="radio" name="major" value="计算机">计算机</label>
                             </div>
@@ -74,12 +86,17 @@
                         </div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">毕业时间</label>
-                        <div class="col-lg-5"><input type="text" class="form-control"><span
+                        <div class="col-lg-5"><input type="date" class="form-control"><span
                                 class="glyphicon glyphicon-pencil pull-right"></span></div>
+                        <div class="col-lg-5 update-tar" hidden><input type="date" class="form-control"></div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">单位编制</label>
                         <div class="col-lg-5"><input type="text" class="form-control"><span
                                 class="glyphicon glyphicon-pencil pull-right"></span></div>
+                        <div class="col-lg-5 update-tar" hidden>
+                            <select>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

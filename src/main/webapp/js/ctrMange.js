@@ -365,11 +365,15 @@ var ctrFn = {
                         })
                         ctrFn.resPage.flag = false;
                     }
+                    var flag = true, cFlag = true;
                     $("#worker-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
                         var workerId = $(this).parent(".roadmap-ico").parent(".roadmap-item").attr("resumeId");
+
                         tip.tipMod({mod: "modify"}, function () {
-                            tip.mod.find("input").attr("readonly", "readonly");
+                            // tip.mod.find("input").attr("readonly", "readonly");
+                            tip.mod.find(".form-group .col-lg-5:not('.update-tar')").attr("hidden", false).find("input").attr("readonly", "readonly");
+                            tip.mod.find(".update-tar").attr("hidden", true);
                             $.ajax({
                                 url: ctrFn.url.resumeDetail,
                                 type: 'POST',
@@ -378,20 +382,58 @@ var ctrFn = {
                                     var result = data ? JSON.parse(data) : null;
                                     if (result && result.success && result.target) {
                                         var info = result.target;
-                                        tip.mod.find(".form-group").eq(0).find("input").eq(0).val(info.owner)
+                                        tip.mod.find(".form-group").eq(0).find("input").val(info.owner)
                                         tip.mod.find(".form-group").eq(1).find("input").eq(0).val(info.education)
+                                        tip.mod.find(".form-group").eq(1).find("select").eq(0).find("option[value=" + info.major + "]").attr("selected", true);
+                                        tip.mod.find(".form-group").eq(2).find("input").eq(0).val(info.major)
                                         tip.mod.find(".form-group").eq(2).find("input[name='major'][value=" + info.major + "]").attr("checked", "checked")
-                                        tip.mod.find(".form-group").eq(3).find("input").eq(0).val(util.formatDate(info.graduateTime, true))
-                                        tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName)
-                                        $(".major-select").searchableSelect();
+                                        tip.mod.find(".form-group").eq(3).find("input").val(util.formatDate(info.graduateTime))
+                                        tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName);
+                                        while (flag) {
+                                            tip.mod.find(".form-group:eq(1)").find("select").eq(0).searchableSelect();
+                                            flag = false;
+                                        }
+
+                                        // tip.mod.find(".form-group:eq(0), .form-group:eq(3)").find(".glyphicon-pencil").unbind().bind("click", function () {
+                                        //     $(this).prev("input").removeAttr("readonly").focus();
+                                        // });
+                                        // tip.mod.find(".form-group:eq(1), .form-group:eq(2)").find(".glyphicon-pencil").unbind().bind("click", function () {
+                                        //     $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden")
+                                        // });
+
+                                        tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
+                                            $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden").children("input").focus();
+                                        });
+
+                                        // tip.mod.find(".form-group").eq(4).find(".glyphicon-pencil").unbind().bind("click", function () {
+                                        //     $(this).parent("div").attr("hidden", true).next("div").attr("hidden", false);
+                                        $.ajax({
+                                            url: host + 'organize/dpsTotal/searchList',
+                                            type: 'POST',
+                                            data: {dptName: null},
+                                            success: function (data) {
+                                                if (data) {
+                                                    var result = JSON.parse(data).target;
+                                                    if (!result)
+                                                        return;
+                                                    $("select[name='resumeDpt']").html("");
+                                                    for (var i = 0; i < result.length; i++) {
+                                                        tip.mod.find(".form-group").eq(4).find("select").eq(0).append('<option value="' + result[i].id + '">' + result[i].dptName + '</option>')
+                                                    }
+                                                    tip.mod.find(".form-group").eq(4).find("select").eq(0).find("option[value=" + info.dptId + "]").attr("selected", true);
+                                                }
+                                                while (cFlag) {
+                                                    tip.mod.find(".form-group:eq(4)").find("select").eq(0).searchableSelect();
+                                                    cFlag = false;
+                                                }
+                                            }
+                                        })
+                                        // })
                                     }
                                 }
                             })
 
 
-                            tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
-                                $(this).prev("input").removeAttr("readonly").focus();
-                            })
                         })
                     })
                 } else {
