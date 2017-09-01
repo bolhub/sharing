@@ -70,7 +70,7 @@
     <table class="table table-striped table-hover" id="resume-list-tb">
         <thead>
         <tr>
-            <td width="4%" tabLab="编号">编号</td>
+            <td width="4%">编号</td>
             <td width="7%">姓名</td>
             <td width="6%">学历</td>
             <td width="8%">专业</td>
