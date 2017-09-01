@@ -40,7 +40,13 @@
 
     #modify .searchable-select{
         display: block;
+        z-index: 1;
     }
+
+    .searchable-select-items{
+        max-height: 150px;
+    }
+
 </style>
 
 <div class="modal fade" id="modify" role="dialog" tabindex="-1" aria-hidden="true">
