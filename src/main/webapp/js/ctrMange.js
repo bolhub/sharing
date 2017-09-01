@@ -404,6 +404,9 @@ var ctrFn = {
                                         tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
                                             $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden").children("input").focus();
                                         });
+                                        tip.mod.find(".glyphicon-remove").unbind().bind("click", function () {
+                                            $(this).parent(".col-lg-5").attr("hidden", true).prev(".col-lg-5").removeAttr("hidden").children("input").focus();
+                                        });
 
                                         // tip.mod.find(".form-group").eq(4).find(".glyphicon-pencil").unbind().bind("click", function () {
                                         //     $(this).parent("div").attr("hidden", true).next("div").attr("hidden", false);

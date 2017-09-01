@@ -23,7 +23,7 @@ $(function () {
             var month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)
             var day = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
             if (endMonth)
-                return  month + "/" + date.getFullYear();
+                return month + "/" + date.getFullYear();
             return date.getFullYear() + "-" + month + "-" + day;
         },
         resumeOpts: function () {
@@ -87,11 +87,43 @@ $(function () {
                             });
                             flag = false;
                         }
+
+                        resumeList.batchDownload($("#resume-list-tb tfoot [type='checkbox']"));
+                        $("#resume-list-tb tfoot [type='checkbox']").unbind().bind("click", function () {
+                            resumeList.batchDownload($(this));
+                        })
                     }
                 }
             })
+        },
+        batchDownload: function (dom) {
+            if (dom.is(":checked")) {
+                $("#resume-list-tb thead tr td:first-child,#resume-list-tb tbody tr td:first-child").html('<input type="checkbox">')
+                $("#resume-list-tb tfoot tr td:eq(1) div").removeAttr("hidden");
+                $("#resume-list-tb thead tr td:first-child").unbind().bind("click", function () {
+                    if ($(this).find("input[type='checkbox']").is(":checked")){
+                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").attr("checked", "checked");
+                    } else {
+                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").removeAttr("checked");
+                    }
+                });
+                $("#resume-list-tb tbody tr td:first-child").unbind().bind("click", function () {
+                    if ($("#resume-list-tb tbody tr td:first-child input[type='checkbox']:checked").length == $("#resume-list-tb tbody tr").length){
+                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").attr("checked", "checked");
+                    } else {
+                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").removeAttr("checked");
+                    }
+                })
+
+            } else {
+                $("#resume-list-tb thead tr td:first-child").html("编号");
+                for (var i = 0; i < $("#resume-list-tb tbody tr").length; i++) {
+                    $("#resume-list-tb tbody tr").eq(i).find("td:first-child").html(i + 1);
+                }
+                $("#resume-list-tb tfoot tr td:eq(1) div").attr("hidden", true);
+            }
         }
-    } 
+    }
 
     resumeList.fillList();
     $(".resume-search-btn").click(function () {

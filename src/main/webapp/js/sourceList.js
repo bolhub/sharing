@@ -44,16 +44,16 @@ $(function () {
                         for (var i = 0; i < list.length; i++) {
                             var item = list[i];
                             var clone = sourceList.listTmp.clone();
-                            $("td:eq(0)", clone).text(i + 1);
+                            $("td:eq(0)", clone).text(i + 1).attr("tabLab", i + 1);
                             $("td:eq(1)", clone).text(item.content);
                             $("td:eq(2)", clone).text(item.mark);
                             $("td:eq(3)", clone).text(sourceList.formatDate(item.description));
                             $("td:eq(3)", clone).text(item.description);
                             $("td:eq(4)", clone).text(sourceList.formatDate(item.uploadTime));
-                            $("td:eq(5)", clone).html('<a href="' + host + "share/"  + item.id + '/downShare">下载</a>');
+                            $("td:eq(5)", clone).html('<a href="' + host + "share/" + item.id + '/downShare">下载</a>');
                             $(".source-list").append(clone);
                         }
-                        while (flag){
+                        while (flag) {
                             $(".box").jqPaginator({
                                 first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
                                 prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
@@ -68,7 +68,7 @@ $(function () {
                                 disableClass: 'disabled',
                                 activeClass: 'active',
                                 onPageChange: function (n) {
-                                    sourceList.fillList(n,this.pageSize);
+                                    sourceList.fillList(n, this.pageSize);
                                 }
                             });
                             flag = false;

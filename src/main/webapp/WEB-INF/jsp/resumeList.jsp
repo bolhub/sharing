@@ -67,10 +67,10 @@
             <%--</div>--%>
         </div>
     </div>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="resume-list-tb">
         <thead>
         <tr>
-            <td width="4%">编号</td>
+            <td width="4%" tabLab="编号">编号</td>
             <td width="7%">姓名</td>
             <td width="6%">学历</td>
             <td width="8%">专业</td>
@@ -84,8 +84,18 @@
         </thead>
         <tbody class="resume-list">
         </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2"><input type="checkbox">批量下载</td>
+            <td colspan="2">
+                <div hidden>下载</div></td>
+            <td colspan="6">
+                <ul class="box"></ul>
+            </td>
+        </tr>
+        </tfoot>
     </table>
-    <ul class="box"></ul>
+
 </body>
 
 <script type="text/javascript" src="<%=basePath%>js/jqPaginator.js"></script>

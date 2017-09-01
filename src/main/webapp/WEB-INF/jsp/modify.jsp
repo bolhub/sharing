@@ -13,7 +13,8 @@
 <link rel="stylesheet" href="<%=basePath%>css/jquery.searchableSelect.css" type="text/css">
 
 <style>
-    #modify .modal-body .form-group .glyphicon-pencil {
+
+    #modify .modal-body .form-group .glyphicon-pencil, #modify .modal-body .form-group .glyphicon-remove {
         position: relative;
         top: -25px;
         right: -20px;
@@ -36,6 +37,10 @@
             color: #ac2925;
         }
     }
+
+    #modify .searchable-select{
+        display: block;
+    }
 </style>
 
 <div class="modal fade" id="modify" role="dialog" tabindex="-1" aria-hidden="true">
@@ -50,7 +55,8 @@
                     <div class="form-group"><label class="control-label col-lg-3">姓名</label>
                         <div class="col-lg-5"><input type="text" class="form-control"><span
                                 class="glyphicon glyphicon-pencil pull-right"></span></div>
-                        <div class="col-lg-5 update-tar" hidden><input type="text" class="form-control"></div>
+                        <div class="col-lg-5 update-tar" hidden><input type="text" class="form-control"><span
+                                class="glyphicon glyphicon-remove pull-right"></span></div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">学历</label>
                         <div class="col-lg-5">
@@ -65,6 +71,7 @@
                                 <option value="中专">中专</option>
                                 <option value="初中">初中</option>
                             </select>
+                            <span class="glyphicon glyphicon-remove pull-right"></span>
                         </div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">专业</label>
@@ -82,13 +89,14 @@
                             <div class="radio">
                                 <label><input type="radio" name="major" value="其它">其它</label>
                             </div>
-                            <%--<span class="glyphicon glyphicon-pencil pull-right"></span>--%>
+                            <span class="glyphicon glyphicon-remove pull-right"></span>
                         </div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">毕业时间</label>
                         <div class="col-lg-5"><input type="date" class="form-control"><span
                                 class="glyphicon glyphicon-pencil pull-right"></span></div>
-                        <div class="col-lg-5 update-tar" hidden><input type="date" class="form-control"></div>
+                        <div class="col-lg-5 update-tar" hidden><input type="date" class="form-control"><span
+                                class="glyphicon glyphicon-remove pull-right"></span></div>
                     </div>
                     <div class="form-group"><label class="control-label col-lg-3">单位编制</label>
                         <div class="col-lg-5"><input type="text" class="form-control"><span
@@ -96,6 +104,7 @@
                         <div class="col-lg-5 update-tar" hidden>
                             <select>
                             </select>
+                            <span class="glyphicon glyphicon-remove pull-right"></span>
                         </div>
                     </div>
                 </div>
