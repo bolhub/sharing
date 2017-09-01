@@ -71,6 +71,7 @@
         #search {
             position: fixed;
             top: 100px;
+            z-index: 1000;
         }
 
         .tar-center .panel-heading .glyphicon {
@@ -155,6 +156,9 @@
             width: calc(100% - 20px);
             text-align: center;
             padding-left: 3px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
             overflow: hidden;
         }
 
