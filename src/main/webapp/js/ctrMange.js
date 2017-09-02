@@ -19,89 +19,62 @@ var ctrFn = {
         proRename: host + "organize/pro/rename",
         resumeDetail: host + "resume/resumeDetail"
     },
-    initMsgBox: function (init) {
-        var $modal = init && init.modelId ? $("#" + init.modelId) : $("#alertModal");
-        $modal.find(".help-block").text();
-        $modal.find("[name='checkName']").val();
-        if (init) {
-            if (init.title)
-                $modal.find(".modal-title").html(init.title);
-            if (init.label)
-                $modal.find(".label-name").html(init.label);
-            if (init.text)
-                $modal.find(".modal-body").html(init.text);
-            if (init.notice)
-                $modal.find(".help-block").html(init.notice);
-        }
-    },
     addOpt: function (options, optionCtr) {
         options.dom.unbind().bind("click", function () {
             if (optionCtr && !ctrFn.opt.ctrId) {
                 tip.tipBox({type: 'warn', text: "请先选择中心"});
                 return;
             }
-            ctrFn.initMsgBox(options.init);
-            $("#alertModal").modal();
-            options.checkCtx.unbind().bind("blur", function () {
-                if (!options.checkCtx.val()) {
-                    ctrFn.initMsgBox({
-                        modelId: 'alertModal',
-                        notice: "数据为空"
-                    })
-                    return;
-                }
-                options.ajax.checkData.checkName = options.checkCtx.val();
-                if (optionCtr) {
-                    options.ajax.checkData.ctrId = ctrFn.opt.ctrId;
-                }
-                $.ajax({
-                    url: options.ajax.url,
-                    type: 'POST',
-                    async: false,
-                    // data: {checkName: options.checkCtx.val()},
-                    data: options.ajax.checkData,
-                    // success: options.ajax.success,
-                    success: options.ajax.success ? options.ajax.success : function (data) {
-                        var result = JSON.parse(data);
-                        if (!result.valid) {
-                            $("#alertModal .help-block").text("已添加，不可使用");
-                            return;
-                        }
-                        $("#alertModal .help-block").text("可以使用");
-                        $("#alertModal .commit-btn").unbind().bind("click", function () {
-                            var saveData = {
-                                saveName: $("#alertModal [name='checkName']").val(),
-                                ctrId: ctrFn.opt.ctrId
-                            };
-
-                            $.ajax({
-                                url: options.ajax.saveUrl,
-                                type: 'POST',
-                                // data: {saveName: $("#alertModal [name='checkName']").val()},
-                                data: saveData,
-                                success: function (result) {
-                                    var data = JSON.parse(result)
-                                    if (data && data.success == true) {
-                                        tip.tipBox({text: options.checkCtx.val() + "添加成功"}, true);
-                                        $("#alertModal").modal('hide');
-                                    } else {
-                                        tip.tipBox({type: 'warn', text: options.checkCtx.val() + "添加失败"}, true);
-                                        $("#alertModal").modal('hide');
-                                    }
-                                },
-                                error: function () {
-                                    tip.tipBox({type: 'err', text: options.checkCtx.val() + "添加失败，服务器故障"}, true);
-                                    $("#alertModal").modal('hide');
-                                }
-                            })
-                        })
-                    },
-                    error: options.ajax.error ? options.ajax.error : function () {
-                        tip.tipBox({
-                            type: 'err',
-                            text: '服务器故障'
-                        })
+            tip.tipMod(options.init, function () {
+                tip.mod.find("[name='checkName']").val('');
+                tip.mod.find(".help-block").html('');
+                if (options.init.label)
+                    tip.mod.find(".label-name").html(options.init.label);
+                tip.mod.find("[name = 'checkName']").unbind().bind("keyup", function () {
+                    if (!$(this).val()) {
+                        tip.mod.find(".help-block").html("数据为空");
+                        return;
                     }
+                    options.ajax.checkData.checkName = $(this).val();
+                    if (optionCtr) {
+                        options.ajax.checkData.ctrId = ctrFn.opt.ctrId;
+                    }
+                    util.post({
+                        url: options.ajax.url,
+                        async: false,
+                        data: options.ajax.checkData,
+                        success: options.ajax.success ? options.ajax.success : function (data) {
+                            var result = data ? JSON.parse(data) : null;
+                            if (result && !result.valid) {
+                                tip.mod.find(".help-block").text("已添加，不可使用");
+                                return;
+                            }
+                            tip.mod.find(".help-block").text("可以使用");
+                            tip.mod.find(".commit-btn").unbind().one("click", function () {
+                                var saveData = {
+                                    saveName: tip.mod.find("[name='checkName']").val(),
+                                    ctrId: ctrFn.opt.ctrId
+                                };
+
+                                util.post({
+                                    url: options.ajax.saveUrl,
+                                    data: saveData,
+                                    success: function (result) {
+                                        var data = JSON.parse(result)
+                                        if (data && data.success == true) {
+                                            tip.tipBox({text: tip.mod.find("[name = 'checkName']").val() + "添加成功"}, true);
+                                            tip.mod.modal('hide');
+                                        } else {
+                                            tip.tipBox({type: 'warn', text: tip.mod.find("[name = 'checkName']").val() + "添加失败"}, true);
+                                            tip.mod.modal('hide');
+                                        }
+                                    }
+                                },function () {
+                                    tip.mod.modal('hide');
+                                })
+                            })
+                        }
+                    })
                 })
             })
         })
@@ -126,7 +99,6 @@ var ctrFn = {
             next: init.next ? init.next : '<li class="next">&gt;</li>',
             last: init.last ? init.last : null,
             page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
-            // totalPages: 5,
             totalCounts: init.totalCounts,
             pageSize: init.pageSize ? init.pageSize : 9,
             currentPage: init.currentPage ? init.currentPage : 1,
@@ -162,9 +134,8 @@ var ctrFn = {
         $(".res-box").html('');
     },
     initCtrList: function (start, size) {
-        $.ajax({
+        util.post({
             url: ctrFn.url.dptList,
-            type: 'POST',
             data: {
                 keyword: ctrFn.opt.searchType && ctrFn.opt.searchType == "中心" ? $("#search input").val() : null,
                 start: start ? start : 1,
@@ -199,7 +170,7 @@ var ctrFn = {
                         var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("ctrId");
                         // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
                         tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
-                            tip.mod.find("#sure-btn").unbind().bind("click", function () {
+                            tip.mod.find("#sure-btn").unbind().one("click", function () {
                                 var changeName = tip.mod.find("[name='changeName']").val();
                                 if (changeName) {
                                     $.ajax({
@@ -250,9 +221,8 @@ var ctrFn = {
         })
     },
     findPrt: function (id, start, size) {
-        $.ajax({
+        util.post({
             url: ctrFn.url.proList,
-            type: 'POST',
             data: {
                 ctrId: id,
                 keyword: ctrFn.opt.searchType && ctrFn.opt.searchType == "项目" ? $("#search input").val() : null,
@@ -289,7 +259,7 @@ var ctrFn = {
                         var proId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("iProId");
                         // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
                         tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
-                            tip.mod.find("#sure-btn").unbind().bind("click", function () {
+                            tip.mod.find("#sure-btn").unbind().one("click", function () {
                                 var changeName = tip.mod.find("[name='changeName']").val();
                                 if (changeName) {
                                     $.ajax({
@@ -335,9 +305,8 @@ var ctrFn = {
         })
     },
     findWorker: function (ctrId, proId, start, size) {
-        $.ajax({
+        util.post({
             url: ctrFn.url.resumeList,
-            type: 'POST',
             data: {
                 ctrId: ctrId,
                 proId: proId,
@@ -371,7 +340,6 @@ var ctrFn = {
                         var workerId = $(this).parent(".roadmap-ico").parent(".roadmap-item").attr("resumeId");
 
                         tip.tipMod({mod: "modify"}, function () {
-                            // tip.mod.find("input").attr("readonly", "readonly");
                             tip.mod.find(".form-group .col-lg-5:not('.update-tar')").attr("hidden", false).find("input").attr("readonly", "readonly");
                             tip.mod.find(".update-tar").attr("hidden", true);
                             $.ajax({
@@ -393,13 +361,6 @@ var ctrFn = {
                                             tip.mod.find(".form-group:eq(1)").find("select").eq(0).searchableSelect();
                                             flag = false;
                                         }
-
-                                        // tip.mod.find(".form-group:eq(0), .form-group:eq(3)").find(".glyphicon-pencil").unbind().bind("click", function () {
-                                        //     $(this).prev("input").removeAttr("readonly").focus();
-                                        // });
-                                        // tip.mod.find(".form-group:eq(1), .form-group:eq(2)").find(".glyphicon-pencil").unbind().bind("click", function () {
-                                        //     $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden")
-                                        // });
 
                                         tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
                                             $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden").children("input").focus();
@@ -467,10 +428,9 @@ var ctrFn = {
     },
     addWorker: function (start, size) {
         tip.tipMod({mod: 'wkAddMod',}, function () {
-            $("#wkAddMod").find(".worker-list").html('<span class="loading"></span>');
-            $.ajax({
+            tip.mod.find(".worker-list").html('<span class="loading"></span>');
+            util.post({
                 url: ctrFn.url.getResumes,
-                type: 'POST',
                 data: {
                     keyword: $("#wkAddMod").find(".keyword-input").val(),
                     ctrId: ctrFn.opt.ctrId,
@@ -481,10 +441,10 @@ var ctrFn = {
                 success: function (data) {
                     var result = JSON.parse(data);
                     if (result && result.success) {
-                        $("#wkAddMod").find(".worker-list").html("");
+                        tip.mod.find(".worker-list").html("");
                         ctrFn.resPage.cellCnt = result.target.counts;
                         for (var i = 0; i < result.target.data.length; i++) {
-                            $("#wkAddMod").find(".worker-list").append('<div class="worker-list-item" wkId="' + result.target.data[i].id + '">\n' +
+                            tip.mod.find(".worker-list").append('<div class="worker-list-item" wkId="' + result.target.data[i].id + '">\n' +
                                 '                        <p><span class="glyphicon glyphicon-user" title="姓名"></span><span>' + result.target.data[i].owner + '</span></p>\n' +
                                 '                        <p><span class="glyphicon glyphicon-magnet" title="学历"></span><span>' + result.target.data[i].education + '</span></p>\n' +
                                 '                        <p><span class="glyphicon glyphicon-tower" title="专业"></span><span title="' + result.target.data[i].major + '">' + result.target.data[i].major + '</span></p>\n' +
@@ -517,7 +477,7 @@ var ctrFn = {
                     } else {
                         $(".worker-page-box").html("");
                         tip.tipMod({mod: 'wkAddMod',}, function () {
-                            $("#wkAddMod").find(".worker-list").html('<span>未查询到数据 </span>');
+                            tip.mod.find(".worker-list").html('<span>未查询到数据 </span>');
                         })
                     }
                     $(".worker-list-item").unbind().bind("click", function () {
@@ -542,23 +502,21 @@ var ctrFn = {
                                 var result = JSON.parse(data);
                                 if (result && result.success) {
                                     tip.tipBox({text: "添加成功，请刷新后查看"}, true);
-                                    $("#wkAddMod").modal('hide');
+                                    tip.mod.modal('hide');
                                 } else {
                                     tip.tipBox({text: "添加失败"}, true);
-                                    $("#wkAddMod").modal('hide');
+                                    tip.mod.modal('hide');
                                 }
                             },
                             error: function () {
                                 tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
-                                $("#wkAddMod").modal('hide');
+                                tip.mod.modal('hide');
                             }
                         })
                     });
-                },
-                error: function () {
-                    $("#wkAddMod").modal('hide');
-                    tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true)
                 }
+            }, function () {
+                tip.mod.modal('hide');
             })
         })
     }
@@ -569,15 +527,13 @@ $(function () {
     ctrFn.initCtrList();
     ctrFn.addOpt({
         dom: $("#ctr-center .panel-title .glyphicon-plus"),
-        checkCtx: $("#alertModal [name='checkName']"),
         init: {
-            modelId: 'alertModal',
+            mod: 'alertModal',
             title: '新增中心',
             label: '中心名称'
         },
         ajax: {
             url: ctrFn.url.dptCheck,
-            // checkData: {checkName: $("#alertModal [name='checkName']").val()},
             checkData: {},
             saveUrl: ctrFn.url.dptAdd
         }
@@ -586,9 +542,8 @@ $(function () {
     //给中心添加新项目
     ctrFn.addOpt({
         dom: $("#pro-center .panel-title .glyphicon-plus"),
-        checkCtx: $("#alertModal [name='checkName']"),
         init: {
-            modelId: 'alertModal',
+            mod:  'alertModal',
             title: '新增项目',
             label: '项目名称'
         },

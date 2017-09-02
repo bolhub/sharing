@@ -3,28 +3,13 @@
  */
 
 $(function () {
-    $("#noticeM").hide();
-    $("#noticeM span.close,#noticeM button").unbind().bind("click",function () {
-        $("#noticeM").hide();
-    })
-    function showBox(init) {
-        if (init){
-            if (init.title)
-                $("#noticeM").find(".modal-title").html(init.title)
-            if (init.content)
-                $("#noticeM").find(".modal-body").html(init.content)
-        }
-        $("#noticeM").show(200);
-    }
-
-    $(".register-contain").hide();
     $("[name='goSignUp']").click(function () {
-        $(".login-contain").slideUp(1000);
-        $(".register-contain").slideDown(1000);
+        $(".login-contain").slideUp(1000).attr("hidden", "hidden");
+        $(".register-contain").hide().removeAttr("hidden").slideDown(1000);
     });
     $("[name='backLogin']").click(function () {
-        $(".register-contain").slideUp(1000);
-        $(".login-contain").slideDown(1000);
+        $(".register-contain").attr("hidden", "hidden");
+        $(".login-contain").hide().removeAttr("hidden").slideDown(1000);
     })
 
 
@@ -120,26 +105,20 @@ $(function () {
 
     $("[name='signUp']").click(function () {
         $("#register-contain").bootstrapValidator('validate');
-        $.ajax({
+        util.post({
             url: host + "register",
-            type:'POST',
             data: fillData(),
             success : function (data) {
-                var result = JSON.parse(data)
-                console.info("result---->" + result.msg)
-                if (result.success){
-                    showBox({
-                        content: result.msg
+                var result = data ? JSON.parse(data) : null;
+                if (data && result.success){
+                    tip.tipBox({
+                        text: result.msg
                     })
                 } else {
-                    showBox({
-                        content: result.msg
+                    tip.tipBox({
+                        text: result.msg
                     })
                 }
-                console.info(data)
-            },
-            error: function (result) {
-                console.info("Server Error");
             }
         })
     })

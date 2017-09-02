@@ -3,7 +3,6 @@ var tip = {
     tipMod: function (init,callback) {
         tip.mod = init && init.mod ? $("#" + init.mod) : $("#tipMod");
         if (init) {
-            if (init.title)
                 tip.mod.find(".modal-title").html(init.title);
             if (init.text)
                 tip.mod.find(".modal-body").html(init.text);
@@ -45,9 +44,9 @@ var tip = {
             if (init.text)
                 $box.find(".panel-body").html(init.text);
         }
-        $box.show(500);
+        $box.hide().removeAttr("hidden").show(500);
         $box.find(".close").unbind().bind("click", function () {
-            $box.hide(500)
+            $box.hide(500).attr("hidden", "hidden");
         })
         if (autoClose) {
             setTimeout(function () {
@@ -65,9 +64,33 @@ var util= {
         if (endMonth)
             return  month + "/" + date.getFullYear();
         return date.getFullYear() + "-" + month + "-" + day;
+    },
+    post: function (init, callback) {
+        $.ajax({
+            url: init.url,
+            type: "POST",
+            async: init.async ? init.async : true,
+            data: init.data,
+            success: init.success,
+            error: function () {
+                tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+                if (callback instanceof "function")
+                    callback();
+            }
+        })
+    },
+    get: function (init, callback) {
+        $.ajax({
+            url: init.url,
+            type: "GET",
+            async: init.async ? init.async : true,
+            data: init.data,
+            success: init.success,
+            error: function () {
+                tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+                if (callback instanceof "function")
+                    callback();
+            }
+        })
     }
 }
-
-$(function () {
-    $("#tipBox").hide();
-})

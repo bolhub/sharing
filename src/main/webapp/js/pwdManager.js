@@ -5,21 +5,6 @@ $(function () {
     var count;
     var flag = true;
     var userList = {
-        modalTem: $('<div class="modal fad noticeModal" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
-            '<div class="modal-dialog">' +
-            '<div class="modal-content">' +
-            '<div class="modal-header">' +
-            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-            '<h4 class="modal-title" id="myModalLabel">Notice</h4>' +
-            '</div>' +
-            '<div class="modal-body">text</div>' +
-            '<div class="modal-footer">' +
-            '<button type="button" class="btn btn-default close-btn" data-dismiss="modal">关闭</button>' +
-            '<button type="button" class="btn btn-primary sure-btn" id="sure-btn">提交更改</button>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>'),
         listTmp: $('<tr>' +
             '<td></td>' +
             '<td></td>' +
@@ -28,51 +13,21 @@ $(function () {
             '<td></td>' +
             '<td></td>' +
             '</tr>'),
-        formatDate: function (tm) {
-            var date = new Date(parseInt(tm));
-            var month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)
-            var day = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
-            return date.getFullYear() + "-" + month + "-" + day;
-        },
         userOpts: function () {
             return {
                 keyword: $(".keyword-input").val() ? $(".keyword-input").val().trim() : null
             }
         },
-        setNoticeBox: function (info) {
-
-            if (!info)
-                return;
-            if (info.title)
-                $("#noticeModal .modal-title").html(info.title);
-            if (info.text)
-                $("#noticeModal .modal-body").html(info.text);
-            if (info.closeBtnName)
-                $("#noticeModal .close-btn").text(info.closeBtnName);
-            if (info.closeBtnHide)
-                $("#noticeModal .close-btn").hide();
-            if (info.sureBtnName)
-                $("#noticeModal .sure-btn").text(info.sureBtnName);
-            if (info.sureBtnHide)
-                $("#noticeModal .sure-btn").hide();
-            console.log(info)
-
-        },
-
         fillList: function (start, size) {
             start = start ? start : 1;
             size = size ? size : 8;
             $(".user-list").html("");
-            $.ajax({
+            util.post({
                 url: host + "reset/" + start + "/" + size,
-                type: "POST",
                 data: userList.userOpts(),
                 success: function (data) {
-                    if (!data)
-                        return;
-                    var result = JSON.parse(data);
-                    console.info(data)
-                    if (result && result.success && result.success == true) {
+                    var result = data ? JSON.parse(data) : null;
+                    if (result && result.success) {
                         var list = result.target.data;
                         count = result.target.counts;
                         for (var i = 0; i < list.length; i++) {
@@ -81,7 +36,7 @@ $(function () {
                             $("td:eq(0)", clone).text(i + 1);
                             $("td:eq(1)", clone).text(item.name);
                             $("td:eq(2)", clone).text(userList.checkRole(item.role));
-                            $("td:eq(3)", clone).text(userList.formatDate(item.rgtTime));
+                            $("td:eq(3)", clone).text(util.formatDate(item.rgtTime));
                             if (loginInfo.role == 1 && item.role == 2 || loginInfo.role == 2 && item.role == 3)
                                 $("td:eq(4)", clone).html('<span class="update-user-btn" uid="' + item.id + '" uname="' + item.name + '" opt="reset">重置密码</span>');
                             $(".user-list").append(clone);
@@ -93,7 +48,6 @@ $(function () {
                                 next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
                                 last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
                                 page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
-                                // totalPages: 5,
                                 totalCounts: count,
                                 pageSize: 8,
                                 currentPage: 1,
@@ -109,49 +63,35 @@ $(function () {
                         $("span.update-user-btn").click(function () {
                             var userId = $(this).attr("uid"),
                                 uname = $(this).attr("uname");
-                            $("#notice-contain").html(userList.modalTem);
-                            userList.setNoticeBox({
+                            tip.tipMod({
                                 title: "提示",
                                 text: '<span class="glyphicon glyphicon-info-sign"> </span>您是否重置' + uname + "的密码",
                                 closeBtnName: "取消",
                                 sureBtnName: "确定"
-                            })
-                            $("#noticeModal").modal();
-                            $("#sure-btn").click(function () {
-                                userList.setNoticeBox({text: "正在重置密码！………………"});
-                                $.ajax({
-                                    url: host + 'password/update',
-                                    type: "post",
-                                    data: {
-                                        userId: userId,
-                                        newPwd: '000000'
-                                    },
-                                    success: function (result) {
-                                        if (result && JSON.parse(result).success) {
-                                            userList.setNoticeBox({text: "重置成功！初如密码为：000000"});
-                                        } else {
-                                            userList.setNoticeBox({text: "重置失败！"});
+                            }, function () {
+                                tip.mod.find("#sure-btn").unbind().one("click", function () {
+                                    tip.mod.find(".modal-body").html('<span class="loading"></span>');
+                                    util.post({
+                                        url: host + 'password/update',
+                                        data: {
+                                            userId: userId,
+                                            newPwd: '000000'
+                                        },
+                                        success: function (result) {
+                                            if (result && JSON.parse(result).success) {
+                                                tip.mod.find(".modal-body").html("重置成功！初如密码为：000000");
+                                            } else {
+                                                tip.mod.find("重置失败！");
+                                            }
+                                            setTimeout(function () {
+                                                tip.mod.modal('hide')
+                                            }, 1000)
                                         }
-                                        setTimeout(function () {
-                                            $("#noticeModal").modal('hide');
-                                        }, 1000)
-                                    },
-                                    error: function () {
-                                        userList.setNoticeBox({
-                                            text: "Server Error~~~~~~~~",
-                                            closeBtnHide: true,
-                                            sureBtnName: "确定"
-                                        });
-
-                                        $("#sure-btn").click(function () {
-                                            $("#noticeModal").modal('hide');
-                                        });
-                                    }
+                                    }, function () {
+                                        tip.mod.modal('hide')
+                                    })
                                 })
-
-
                             })
-
                         })
                     }
                 }

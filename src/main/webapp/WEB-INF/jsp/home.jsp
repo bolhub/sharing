@@ -8,8 +8,6 @@
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-//    String loginRole = request.getSession().getAttribute("user_role") == null ? null : request.getSession().getAttribute("user_role").toString();
-
 %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%--<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>--%>
@@ -151,14 +149,6 @@
             height: 16px;
         }
 
-        #tipBox {
-            position: fixed;
-            bottom: 20px;
-            right: 30px;
-            min-width: 300px;
-            min-height: 120px;
-        }
-        
         @-webkit-keyframes logo-action {
             0%{
                 transform: scale(1);
@@ -207,7 +197,7 @@
             </div>
             <div class="panel-body login-btn-div">
                 <div class="col-lg-6 btn" id="reset-pwd-btn">修改密码</div>
-                <div class="col-lg-6 btn" id="exit-btn">退出</div>
+                <div class="col-lg-6 btn" id="exist-btn">退出</div>
             </div>
         </div>
     </div>
@@ -218,39 +208,10 @@
 </aside>
 
 <div class="col-md-9 main-contain"></div>
-<div id="notice-contain"></div>
+<jsp:include page="common.jsp"></jsp:include>
 
-<!-- 消信提示框-->
-<div id="tipBox" class="panel panel-default">
-    <div class="panel-heading">
-        <div class="panel-title">
-            <span class="glyphicon glyphicon-info-sign"></span>
-            <strong>提示</strong>
-            <span class="close">&times;</span>
-        </div>
-    </div>
-    <div class="panel-body"></div>
-</div>
-<!-- 模态框 -->
-<div class="modal fad noticeModal" id="tipMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Notice</h4>
-            </div>
-            <div class="modal-body">text</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="sure-btn">提交更改</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 <script type="text/javascript" src="<%=basePath%>js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/common.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/home.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/bootstrapValidator.min.js"></script>
