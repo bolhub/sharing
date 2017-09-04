@@ -218,5 +218,15 @@ public class ResumeController extends BaseController {
         response.setContentType("text/html;charset=UTF-8");
         responseMsg(response, new Message(resume, true, NoticeConst.GET_DATA_NOTICE));
     }
+
+    @RequestMapping(value = "resumeInfo/update", method = RequestMethod.POST)
+    public void updateResume(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String owner = request.getParameter("owner");
+        String education = request.getParameter("education");
+        String major = request.getParameter("major");
+        Date graduateTime = !StringUtils.isEmpty(request.getParameter("graduateTime")) ? sdf.parse(request.getParameter("graduateTime")) : null;
+        Integer dptId = !StringUtils.isEmpty(request.getParameter("ctrId")) ? Integer.valueOf(request.getParameter("ctrId")) : null;
+    }
 }
 

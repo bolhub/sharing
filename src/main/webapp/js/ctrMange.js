@@ -17,7 +17,8 @@ var ctrFn = {
         resumeAdd: host + 'organize/createShip',
         ctrRename: host + "organize/dpt/rename",
         proRename: host + "organize/pro/rename",
-        resumeDetail: host + "resume/resumeDetail"
+        resumeDetail: host + "resume/resumeDetail",
+        updateResume: host + "resume/resumeInfo/update"
     },
     addOpt: function (options, optionCtr) {
         options.dom.unbind().bind("click", function () {
@@ -65,11 +66,14 @@ var ctrFn = {
                                             tip.tipBox({text: tip.mod.find("[name = 'checkName']").val() + "添加成功"}, true);
                                             tip.mod.modal('hide');
                                         } else {
-                                            tip.tipBox({type: 'warn', text: tip.mod.find("[name = 'checkName']").val() + "添加失败"}, true);
+                                            tip.tipBox({
+                                                type: 'warn',
+                                                text: tip.mod.find("[name = 'checkName']").val() + "添加失败"
+                                            }, true);
                                             tip.mod.modal('hide');
                                         }
                                     }
-                                },function () {
+                                }, function () {
                                     tip.mod.modal('hide');
                                 })
                             })
@@ -338,13 +342,12 @@ var ctrFn = {
                     $("#worker-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
                         var workerId = $(this).parent(".roadmap-ico").parent(".roadmap-item").attr("resumeId");
-
+                        //简历修改
                         tip.tipMod({mod: "modify"}, function () {
                             tip.mod.find(".form-group .col-lg-5:not('.update-tar')").attr("hidden", false).find("input").attr("readonly", "readonly");
                             tip.mod.find(".update-tar").attr("hidden", true);
-                            $.ajax({
+                            util.post({
                                 url: ctrFn.url.resumeDetail,
-                                type: 'POST',
                                 data: {workerId: workerId},
                                 success: function (data) {
                                     var result = data ? JSON.parse(data) : null;
@@ -355,7 +358,7 @@ var ctrFn = {
                                         tip.mod.find(".form-group").eq(1).find("select").eq(0).find("option[value=" + info.major + "]").attr("selected", true);
                                         tip.mod.find(".form-group").eq(2).find("input").eq(0).val(info.major)
                                         tip.mod.find(".form-group").eq(2).find("input[name='major'][value=" + info.major + "]").attr("checked", "checked")
-                                        tip.mod.find(".form-group").eq(3).find("input").val(util.formatDate(info.graduateTime))
+                                        tip.mod.find(".form-group").eq(3).find("input").val(util.formatDate(info.graduateTime, true))
                                         tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName);
                                         while (flag) {
                                             tip.mod.find(".form-group:eq(1)").find("select").eq(0).searchableSelect();
@@ -369,13 +372,12 @@ var ctrFn = {
                                             $(this).parent(".col-lg-5").attr("hidden", true).prev(".col-lg-5").removeAttr("hidden").children("input").focus();
                                         });
 
-                                        $.ajax({
+                                        util.post({
                                             url: host + 'organize/dpsTotal/searchList',
-                                            type: 'POST',
                                             data: {dptName: null},
                                             success: function (data) {
                                                 if (data) {
-                                                    var result = JSON.parse(data).target;
+                                                    var result = data ? JSON.parse(data).target : null;
                                                     if (!result)
                                                         return;
                                                     $("select[name='resumeDpt']").html("");
@@ -389,13 +391,48 @@ var ctrFn = {
                                                     cFlag = false;
                                                 }
                                             }
-                                        })
-                                        // })
+                                        });
+
+
+                                        tip.mod.find(".btn-primary").unbind().bind("click", function () {
+                                            var tag = $(".update-tar");
+                                            var modify = {
+                                                owner: ctrFn.checkUpdate(tag.eq(0), tag.eq(0).find("input").val()) ? tag.eq(0).find("input").val() : null,
+                                                education: ctrFn.checkUpdate(tag.eq(1), tag.eq(1).find("select").find("option:selected").text()) ? tag.eq(1).find("select").find("option:selected").val() : null,
+                                                major: ctrFn.checkUpdate(tag.eq(2), tag.eq(2).find("[name='major']:checked").val()) ? tag.eq(2).find("[name='major']:checked").val() : null,
+                                                graduateTime: ctrFn.checkUpdate(tag.eq(3), tag.eq(3).find("input").val()) ? tag.eq(3).find("input").val() : null,
+                                                ctrId: ctrFn.checkUpdate(tag.eq(4), tag.eq(4).find("select").find("option:selected").text()) ? tag.eq(4).find("select").find("option:selected").val() : null
+                                            };
+                                            var flag = false;
+                                            if (!$.isEmptyObject(modify)){
+                                                for (x in modify){
+                                                    if (modify[x]){
+                                                        console.info(modify[x])
+                                                        flag = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (flag){
+                                                util.post({
+                                                    url: ctrFn.url.updateResume,
+                                                    data: modify,
+                                                    success: function (data) {
+                                                        var result = data ? JSON.parse(data) : null;
+                                                        if (result && result.success){
+                                                            tip.tipBox({text: "修改成功"}, true);
+                                                            tip.mod.modal("hidden");
+                                                        } else {
+                                                            tip.tipBox({text: "修改失败"}, true);
+                                                            tip.mod.modal("hidden");
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        });
                                     }
                                 }
                             })
-
-
                         })
                     })
                 } else {
@@ -403,6 +440,13 @@ var ctrFn = {
                 }
             }
         })
+    },
+    checkUpdate: function (dom, domVal) {
+        if (dom.attr("hidden") == "hidden")
+            return false;
+        if (!domVal || domVal == dom.prev(".prev-tar").find("input").val())
+            return false;
+        return true;
     },
     searchByKeyword: function () {
         switch (ctrFn.opt.searchType) {
@@ -490,9 +534,8 @@ var ctrFn = {
                         }
                     });
                     $("#wkAddMod .modal-footer button:eq(1)").unbind().bind("click", function () {
-                        $.ajax({
+                        util.post({
                             url: ctrFn.url.resumeAdd,
-                            type: 'post',
                             data: {
                                 ctrId: ctrFn.opt.ctrId,
                                 proId: ctrFn.opt.proId,
@@ -507,11 +550,9 @@ var ctrFn = {
                                     tip.tipBox({text: "添加失败"}, true);
                                     tip.mod.modal('hide');
                                 }
-                            },
-                            error: function () {
-                                tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
-                                tip.mod.modal('hide');
                             }
+                        }, function () {
+                            tip.mod.modal('hide');
                         })
                     });
                 }
@@ -543,7 +584,7 @@ $(function () {
     ctrFn.addOpt({
         dom: $("#pro-center .panel-title .glyphicon-plus"),
         init: {
-            mod:  'alertModal',
+            mod: 'alertModal',
             title: '新增项目',
             label: '项目名称'
         },
