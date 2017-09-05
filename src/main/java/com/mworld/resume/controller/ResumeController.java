@@ -164,9 +164,10 @@ public class ResumeController extends BaseController {
 //    }
     @RequestMapping(value = "/previewDoc", method = RequestMethod.GET)
     public void previewDoc(HttpServletRequest request, HttpServletResponse response) {
+//        String output = this.getClass().getClassLoader().getResource("/").getPath().replace("WEB-INF/classes/", "js/swf");
         String output = this.getClass().getClassLoader().getResource("/").getPath().replace("WEB-INF/classes/", "js/swf");
         logger.info(output + "-------------------");
-        DocConverter docConverter = new DocConverter("D:/test2.doc");
+        DocConverter docConverter = new DocConverter("D:/随书附带说明.doc");
         docConverter.setOutPath(output);
         docConverter.convert();
         if (docConverter.convert())
@@ -204,14 +205,14 @@ public class ResumeController extends BaseController {
 
     @RequestMapping(value = "resumeDetail", method = RequestMethod.POST)
     @ResponseBody
-    public void resumeDetail(HttpServletRequest request, HttpServletResponse response){
+    public void resumeDetail(HttpServletRequest request, HttpServletResponse response) {
         String id = request.getParameter("workerId");
-        if (StringUtils.isEmpty(id)){
+        if (StringUtils.isEmpty(id)) {
             responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
             return;
         }
         ResumeMapVo resume = resumeService.findResumeById(id.trim());
-        if (Objects.isNull(resume)){
+        if (Objects.isNull(resume)) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
@@ -220,13 +221,31 @@ public class ResumeController extends BaseController {
     }
 
     @RequestMapping(value = "resumeInfo/update", method = RequestMethod.POST)
-    public void updateResume(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void updateResume(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String owner = request.getParameter("owner");
-        String education = request.getParameter("education");
-        String major = request.getParameter("major");
-        Date graduateTime = !StringUtils.isEmpty(request.getParameter("graduateTime")) ? sdf.parse(request.getParameter("graduateTime")) : null;
-        Integer dptId = !StringUtils.isEmpty(request.getParameter("ctrId")) ? Integer.valueOf(request.getParameter("ctrId")) : null;
+        String owner = StringUtils.isEmpty(request.getParameter("owner")) ? null : request.getParameter("owner").trim();
+        String education = StringUtils.isEmpty(request.getParameter("education")) ? null : request.getParameter("education");
+        String major = StringUtils.isEmpty(request.getParameter("major")) ? null : request.getParameter("major");
+        Date graduateTime = StringUtils.isEmpty(request.getParameter("graduateTime")) ? null : sdf.parse(request.getParameter("graduateTime"));
+        Integer dptId = StringUtils.isEmpty(request.getParameter("ctrId")) ? null : Integer.valueOf(request.getParameter("ctrId"));
+        String id = StringUtils.isEmpty(request.getParameter("workerId")) ? null : request.getParameter("workerId");
+        if (id == null || owner == null && education == null && major == null && graduateTime == null && dptId == null) {
+            responseMsg(response, new Message<>(false, NoticeConst.LACK_PARAMETERS));
+            return;
+        }
+        ResumeRequestVo vo = new ResumeRequestVo();
+        vo.setOwner(owner);
+        vo.setEducation(education);
+        vo.setMajor(major);
+        vo.setGraduateTime(graduateTime);
+        vo.setDptId(dptId);
+        vo.setId(id);
+        Integer update = resumeService.updateResume(vo);
+        if (update == null || update <= 0) {
+            responseMsg(response, new Message(false, NoticeConst.UPDATE_FAIL));
+            return;
+        }
+        responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
     }
 }
 

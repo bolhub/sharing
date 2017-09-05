@@ -17,6 +17,7 @@
         right: 30px;
         min-width: 300px;
         min-height: 120px;
+        z-index: 9000;
     }
 </style>
 <!-- 消信提示框-->

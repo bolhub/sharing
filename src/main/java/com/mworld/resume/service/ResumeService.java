@@ -28,4 +28,6 @@ public interface ResumeService {
     public Integer findAllowResumesCnt(ResumeRequestVo options);
 
     public ResumeMapVo findResumeById(String id);
+
+    public Integer updateResume(ResumeRequestVo requestVo);
 }

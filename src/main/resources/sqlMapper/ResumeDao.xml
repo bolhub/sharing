@@ -243,4 +243,16 @@
         on r.dpt_id=d.id
         where r.id=#{id}
     </select>
+
+    <update id="updateResume" parameterType="com.mworld.resume.vo.ResumeRequestVo">
+        update resume
+        <trim prefix="set" suffixOverrides=",">
+            <if test="owner != null and owner != ''">owner=#{owner},</if>
+            <if test="education != null and education != ''">education=#{education},</if>
+            <if test="major != null and major != ''">major=#{major},</if>
+            <if test="graduateTime != null">graduate_time=#{graduateTime},</if>
+            <if test="dptId != null">dpt_id=#{dptId},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
 </mapper>

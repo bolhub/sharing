@@ -326,7 +326,8 @@ var ctrFn = {
                     ctrFn.resPage.cnt = result.target.counts;
                     for (var i = 0; i < list.length; i++) {
                         $("#worker-center .panel-body").append('<div class="roadmap-item" resumeId="' + list[i].id + '">\n' +
-                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
+                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span>' +
+                            '            <span class="pull-left"><span class="glyphicon glyphicon-eye-open"></span></span></span>\n' +
                             '            <span class="roadmap-title">' + list[i].owner + '</span>\n' +
                             '        </div>')
                     }
@@ -338,6 +339,8 @@ var ctrFn = {
                         })
                         ctrFn.resPage.flag = false;
                     }
+
+                    //修改视图
                     var flag = true, cFlag = true;
                     $("#worker-center .glyphicon-edit").unbind().bind("click", function () {
                         event.stopPropagation();
@@ -358,7 +361,7 @@ var ctrFn = {
                                         tip.mod.find(".form-group").eq(1).find("select").eq(0).find("option[value=" + info.major + "]").attr("selected", true);
                                         tip.mod.find(".form-group").eq(2).find("input").eq(0).val(info.major)
                                         tip.mod.find(".form-group").eq(2).find("input[name='major'][value=" + info.major + "]").attr("checked", "checked")
-                                        tip.mod.find(".form-group").eq(3).find("input").val(util.formatDate(info.graduateTime, true))
+                                        tip.mod.find(".form-group").eq(3).find("input").val(util.formatDate(info.graduateTime))
                                         tip.mod.find(".form-group").eq(4).find("input").eq(0).val(info.dptName);
                                         while (flag) {
                                             tip.mod.find(".form-group:eq(1)").find("select").eq(0).searchableSelect();
@@ -394,37 +397,38 @@ var ctrFn = {
                                         });
 
 
-                                        tip.mod.find(".btn-primary").unbind().bind("click", function () {
+                                        tip.mod.find(".btn-primary").unbind().one("click", function () {
                                             var tag = $(".update-tar");
                                             var modify = {
                                                 owner: ctrFn.checkUpdate(tag.eq(0), tag.eq(0).find("input").val()) ? tag.eq(0).find("input").val() : null,
                                                 education: ctrFn.checkUpdate(tag.eq(1), tag.eq(1).find("select").find("option:selected").text()) ? tag.eq(1).find("select").find("option:selected").val() : null,
                                                 major: ctrFn.checkUpdate(tag.eq(2), tag.eq(2).find("[name='major']:checked").val()) ? tag.eq(2).find("[name='major']:checked").val() : null,
                                                 graduateTime: ctrFn.checkUpdate(tag.eq(3), tag.eq(3).find("input").val()) ? tag.eq(3).find("input").val() : null,
-                                                ctrId: ctrFn.checkUpdate(tag.eq(4), tag.eq(4).find("select").find("option:selected").text()) ? tag.eq(4).find("select").find("option:selected").val() : null
+                                                ctrId: ctrFn.checkUpdate(tag.eq(4), tag.eq(4).find("select").find("option:selected").text()) ? tag.eq(4).find("select").find("option:selected").val() : null,
+                                                workerId: workerId
                                             };
                                             var flag = false;
-                                            if (!$.isEmptyObject(modify)){
-                                                for (x in modify){
-                                                    if (modify[x]){
+                                            if (!$.isEmptyObject(modify)) {
+                                                for (x in modify) {
+                                                    if (modify[x]) {
                                                         console.info(modify[x])
                                                         flag = true;
                                                         break;
                                                     }
                                                 }
                                             }
-                                            if (flag){
+                                            if (flag) {
                                                 util.post({
                                                     url: ctrFn.url.updateResume,
                                                     data: modify,
                                                     success: function (data) {
                                                         var result = data ? JSON.parse(data) : null;
-                                                        if (result && result.success){
+                                                        if (result && result.success) {
                                                             tip.tipBox({text: "修改成功"}, true);
-                                                            tip.mod.modal("hidden");
+                                                            tip.mod.modal("hide");
                                                         } else {
                                                             tip.tipBox({text: "修改失败"}, true);
-                                                            tip.mod.modal("hidden");
+                                                            tip.mod.modal("hide");
                                                         }
                                                     }
                                                 })
@@ -435,6 +439,114 @@ var ctrFn = {
                             })
                         })
                     })
+
+                    //swf视图
+                    $("#worker-center .glyphicon-eye-open").unbind().bind("click", function () {
+                        tip.tipMod({
+                            // text: '<div style="position: absolute; left: 50px; top: 10px;">\n' +
+                            // '    <a id="viewerPlaceHolder" style="width: 820px; height: 650px; display: block"></a>\n' +
+                            // '    <div id="documentViewer" style="width: 820px; height: 650px; display: block"></div>'
+                            text: '<div>\n' +
+                            '    <a id="viewerPlaceHolder" style="height: 400px"></a>\n' +
+                            '    <div id="documentViewer" style="400px"></div>'
+                        }, function () {
+                            $.ajax({
+                                url: host + 'resume/previewDoc',
+                                type: 'GET',
+                                success: function (result) {
+                                    if (!result)
+                                        return;
+                                    var data = JSON.parse(result);
+                                    console.log(data.msg.replace("//", "/"))
+                                    var fp = new FlexPaperViewer(
+                                        'FlexPaperViewer',
+                                        'viewerPlaceHolder', {
+                                            config: {
+                                                // SwfFile : escape(host + "js/swf/test.swf"),//编码设置
+                                                SwfFile: host + data.msg.replace("//", "/"),//编码设置
+                                                Scale: 0.6,
+                                                ZoomTransition: 'easeOut',//变焦过渡
+                                                ZoomTime: 0.5,
+                                                ZoomInterval: 0.2,//缩放滑块-移动的缩放基础[工具栏]
+                                                FitPageOnLoad: true,//自适应页面
+                                                FitWidthOnLoad: true,//自适应宽度
+                                                FullScreenAsMaxWindow: false,//全屏按钮-新页面全屏[工具栏]
+                                                ProgressiveLoading: false,//分割加载
+                                                MinZoomSize: 0.2,//最小缩放
+                                                MaxZoomSize: 3,//最大缩放
+                                                SearchMatchAll: true,
+                                                InitViewMode: 'Portrait',//初始显示模式(SinglePage,TwoPage,Portrait)
+
+                                                ViewModeToolsVisible: true,//显示模式工具栏是否显示
+                                                ZoomToolsVisible: true,//缩放工具栏是否显示
+                                                NavToolsVisible: true,//跳页工具栏
+                                                CursorToolsVisible: false,
+                                                SearchToolsVisible: true,
+                                                PrintPaperAsBitmap: false,
+                                                localeChain: 'en_US'
+                                            }
+                                        });
+                                }
+                            })
+                            var fp = new FlexPaperViewer(
+                                'FlexPaperViewer',
+                                'viewerPlaceHolder', {
+                                    config: {
+//                SwfFile : escape(host + "js/swf/test.swf"),//编码设置
+                                        SwfFile: host + "test.swf",//编码设置
+                                        Scale: 0.6,
+                                        ZoomTransition: 'easeOut',//变焦过渡
+                                        ZoomTime: 0.5,
+                                        ZoomInterval: 0.2,//缩放滑块-移动的缩放基础[工具栏]
+                                        FitPageOnLoad: true,//自适应页面
+                                        FitWidthOnLoad: true,//自适应宽度
+                                        FullScreenAsMaxWindow: false,//全屏按钮-新页面全屏[工具栏]
+                                        ProgressiveLoading: false,//分割加载
+                                        MinZoomSize: 0.2,//最小缩放
+                                        MaxZoomSize: 3,//最大缩放
+                                        SearchMatchAll: true,
+                                        InitViewMode: 'Portrait',//初始显示模式(SinglePage,TwoPage,Portrait)
+
+                                        ViewModeToolsVisible: true,//显示模式工具栏是否显示
+                                        ZoomToolsVisible: true,//缩放工具栏是否显示
+                                        NavToolsVisible: true,//跳页工具栏
+                                        CursorToolsVisible: false,
+                                        SearchToolsVisible: true,
+                                        PrintPaperAsBitmap: false,
+                                        localeChain: 'en_US'
+                                    }
+                                });
+
+// $('#documentViewer').FlowPaperViewer(
+//    { config : {
+//        SwfFile : host +"js/swf/test.swf",
+//        IMGFiles : "Paper.pdf_{page}.png",
+//        JSONFile : "Paper.pdf.js",
+//        PDFFile : "Paper.pdf",
+//        Scale : 0.6,
+//        ZoomTransition : "easeOut",
+//        ZoomTime : 0.5,
+//        ZoomInterval : 0.1,
+//        FitPageOnLoad : false,
+//        FitWidthOnLoad : false,
+//        FullScreenAsMaxWindow : true,
+//        ProgressiveLoading : true,
+//        MinZoomSize : 0.2,
+//        MaxZoomSize : 5,
+//        SearchMatchAll : false,
+//        InitViewMode : 'Portrait',
+//
+//        ViewModeToolsVisible : true,
+//        ZoomToolsVisible : true,
+//        NavToolsVisible : true,
+//        CursorToolsVisible : true,
+//        SearchToolsVisible : true,
+//
+//        localeChain : "en_US"
+//    }});
+                        })
+                    })
+
                 } else {
                     $("#worker-center .panel-body").text("未查询到数据");
                 }

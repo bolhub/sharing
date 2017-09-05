@@ -78,4 +78,10 @@ public class ResumeServiceImpl implements ResumeService {
     public ResumeMapVo findResumeById(String id) {
         return resumeDao.findResumeById(id);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Integer updateResume(ResumeRequestVo requestVo) {
+        return resumeDao.updateResume(requestVo);
+    }
 }

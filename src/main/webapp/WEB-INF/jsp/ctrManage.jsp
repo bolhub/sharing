@@ -13,6 +13,9 @@
 <html>
 <head>
     <title>Title</title>
+    <script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>
+    <script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>
+    <script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>
     <style>
         .roadmap-item {
             display: inline-block;
@@ -238,6 +241,9 @@
         }
 
     </style>
+    <script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>
+    <script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>
+    <script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>
 </head>
 <body>
 <div class="panel panel-default tar-center" id="ctr-center">
@@ -344,6 +350,8 @@
 
 </body>
 <script type="text/javascript" src="<%=basePath%>js/jqPaginator.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/ctrMange.js"></script>
-
 </html>
