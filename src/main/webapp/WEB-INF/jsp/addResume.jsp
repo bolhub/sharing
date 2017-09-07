@@ -126,7 +126,7 @@
         <div class="form-group">
             <label for="" class="col-lg-3 control-label">上传简历</label>
             <div class="col-lg-5">
-                <input type="file" name="file" id="input-file-now" class="dropify" data-default-file="" />
+                <input type="file" name="resumeFile" id="input-file-now" class="dropify" data-default-file="" />
             </div>
         </div>
         <%--<div class="form-group">--%>

@@ -16,7 +16,9 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -270,16 +272,64 @@ public class ResumeController extends BaseController {
     }*/
 
     @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
-    public void uploadRe(HttpServletRequest request, HttpServletResponse response)throws FileUploadException {
+    public void uploadRe(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        FileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        List<FileItem> list = upload.parseRequest(request);
-        for (FileItem item : list){
+        if (isMultipart) {
+            FileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            List<FileItem> list = upload.parseRequest(request);
+            String resName = null, major = null, education = null;
+            Integer dptId = null;
+            Date graduateTime = null;
+            FileItem tmpFileItem = null;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            for (FileItem item : list) {
+                if ("resumeFile".equals(item.getFieldName())) {
+                    tmpFileItem = item;
+                } else if ("graduateTime".equals(item.getFieldName())) {
+                    graduateTime = format.parse(item.getString());
+                } else if ("major".equals(item.getFieldName())) {
+                    major = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                } else if ("resName".equals(item.getFieldName())) {
+                    resName = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                } else if ("resumeDpt".equals(item.getFieldName())) {
+                    dptId = NumberUtils.toInt(item.getString());
+                } else if ("education".equals(item.getFieldName())) {
+                    education = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                }
+            }
 
+            if (resName == null || major == null || education == null || graduateTime == null || tmpFileItem == null) {
+                responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+                return;
+            }
+
+            String tmpFileDir = getTempFilePath("resumeCob" + File.separator + getLoginUser(request).getId());
+            File tmpFile = new File(tmpFileDir);
+            if (!tmpFile.exists()) {
+                tmpFile.mkdirs();
+            }
+            String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
+            String destName = new String(originName.substring(0, tmpFileItem.getName().lastIndexOf(".")) + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf(".")));
+            File destFile = new File(tmpFileDir, destName);
+            FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
+            ResumeRequestVo requestVo = new ResumeRequestVo();
+            requestVo.setOwner(resName);
+            requestVo.setDptId(dptId);
+            requestVo.setDestName(destName);
+            requestVo.setFileName(originName);
+            requestVo.setEducation(education);
+            requestVo.setMajor(major);
+            requestVo.setGraduateTime(graduateTime);
+            Integer updateCnt = resumeService.addResume(requestVo);
+            if (updateCnt == null || updateCnt <= 0){
+                responseMsg(response, new Message(false, NoticeConst.DATA_SAVE_FAIL));
+                return;
+            }
+            responseMsg(response, new Message(true, NoticeConst.DATA_SAVE_SUCCESS));
         }
 
-        logger.info("UPLOAD -------------------------------");
+
     }
 }
 

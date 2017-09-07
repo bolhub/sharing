@@ -42,7 +42,8 @@ $(function () {
             processData: false,
             success: function (data) {
                 var result = data ? JSON.parse(data) : null;
-                console.info("data --> " + result)
+                if (result.success)
+                    tip.tipBox({text: result.msg}, true);
             },
             error: function () {
                 tip.tipBox({type: 'err', text: "服务器错误！"},true)
