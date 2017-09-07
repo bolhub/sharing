@@ -85,13 +85,13 @@
     <%--</div>--%>
     <%--</div>--%>
     <%--</div>--%>
-    <form name="resumeForm" class="form-horizontal" action="resume/uploadRes" enctype="multipart/form-data" method="post">
+    <form id="resumeForm" class="form-horizontal" action="resume/uploadRes" enctype="multipart/form-data" method="post">
         <div class="form-group"><label for="" class="col-lg-3 control-label">姓名</label>
-            <div class="col-lg-5"><input type="text" class="form-control"></div>
+            <div class="col-lg-5"><input name="resName" type="text" class="form-control"></div>
         </div>
         <div class="form-group"><label for="" class="col-lg-3 control-label">学历</label>
             <div class="col-lg-5">
-                <select>
+                <select name="education">
                     <option value="本科">本科</option>
                     <option value="大专">大专</option>
                     <option value="高中">高中</option>
@@ -114,7 +114,7 @@
             </div>
         </div>
         <div class="form-group"><label for="" class="col-lg-3 control-label">毕业时间</label>
-            <div class="col-lg-5"><input type="date" class="form-control"></div>
+            <div class="col-lg-5"><input name="graduateTime" type="date" class="form-control"></div>
         </div>
         <div class="form-group"><label for="" class="col-lg-3 control-label">单位编制</label>
             <div class="col-lg-5">

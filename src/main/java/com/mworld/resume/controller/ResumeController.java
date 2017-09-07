@@ -11,6 +11,10 @@ import com.mworld.common.ResponseVo;
 import com.mworld.resume.vo.ResumeMapVo;
 import com.mworld.resume.vo.ResumeRequestVo;
 import com.mworld.util.DocConverter;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
@@ -266,9 +270,14 @@ public class ResumeController extends BaseController {
     }*/
 
     @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
-    public void uploadRe(HttpServletRequest request, HttpServletResponse response){
-
+    public void uploadRe(HttpServletRequest request, HttpServletResponse response)throws FileUploadException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        FileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        List<FileItem> list = upload.parseRequest(request);
+        for (FileItem item : list){
+
+        }
 
         logger.info("UPLOAD -------------------------------");
     }

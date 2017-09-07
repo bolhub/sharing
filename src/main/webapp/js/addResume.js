@@ -26,28 +26,28 @@ $(function () {
 
     $("#ctlBtn").unbind().one("click", function (e) {
         e.preventDefault();
-        // var form = $("form")[0];
-        var formData = new FormData();
+        var form = $("#resumeForm")[0];
+        var formData = new FormData(form);
         formData.append("ids", "123");
         formData.append("ids", $("[name='file']").file)
         console.info(formData.get("ids"))
         console.info(formData)
         $.ajax({
-            url: host + "resume/uploadRes",
-            type: "POST",
-            encType: 'multipart/form-data',
-            // dataType: 'json',
+            url: host + "resume/uploadRes" ,
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
             contentType: false,
             processData: false,
-            cache: false,
             success: function (data) {
                 var result = data ? JSON.parse(data) : null;
                 console.info("data --> " + result)
             },
             error: function () {
-                tip.tipBox({type: 'err', text: "服务器错误！"})
+                tip.tipBox({type: 'err', text: "服务器错误！"},true)
             }
-        })
+        });
     })
 
 });
