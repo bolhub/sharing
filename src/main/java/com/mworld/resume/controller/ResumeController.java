@@ -11,6 +11,7 @@ import com.mworld.common.ResponseVo;
 import com.mworld.resume.vo.ResumeMapVo;
 import com.mworld.resume.vo.ResumeRequestVo;
 import com.mworld.util.DocConverter;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -163,15 +165,20 @@ public class ResumeController extends BaseController {
 //        }
 //    }
     @RequestMapping(value = "/previewDoc", method = RequestMethod.GET)
-    public void previewDoc(HttpServletRequest request, HttpServletResponse response) {
+    public void previewDoc(HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        String output = this.getClass().getClassLoader().getResource("/").getPath().replace("WEB-INF/classes/", "js/swf");
-        String output = this.getClass().getClassLoader().getResource("/").getPath().replace("WEB-INF/classes/", "js/swf");
-        logger.info(output + "-------------------");
-        DocConverter docConverter = new DocConverter("D:/随书附带说明.doc");
-        docConverter.setOutPath(output);
-        docConverter.convert();
-        if (docConverter.convert())
-            responseMsg(response, new Message<>(true, "js/swf/test2.swf"));
+        String output = "/D:/SWF";
+        logger.info("-------------------" + Thread.currentThread().getContextClassLoader().getResource(""));
+//        DocConverter docConverter = new DocConverter("D:/随书附带说明.doc");
+//        docConverter.setOutPath(output);
+//        docConverter.convert();
+//        if (docConverter.convert())
+//            responseMsg(response, new Message<>(true, "js/swf/test2.swf"));
+        File file = new File("D:/test.swf");
+        logger.info(file.getCanonicalPath());
+        logger.info(file.getAbsolutePath());
+        response.setContentType("text/html;charset=UTF-8");
+        responseMsg(response, new Message<>(true, file.getCanonicalPath()));
     }
 
     @RequestMapping(value = "findResums", method = RequestMethod.POST)
@@ -246,6 +253,24 @@ public class ResumeController extends BaseController {
             return;
         }
         responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
+    }
+
+   /* @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
+    public void upload(@RequestParam("file")MultipartFile file, HttpServletRequest request, HttpServletResponse response){
+        if (file == null){
+            responseMsg(response, new Message(false, "None of file upload"));
+            return;
+        }
+        logger.info("UPLOAD -------------------------------");
+//        file.isEmpty()
+    }*/
+
+    @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
+    public void uploadRe(HttpServletRequest request, HttpServletResponse response){
+
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+
+        logger.info("UPLOAD -------------------------------");
     }
 }
 

@@ -1,4 +1,59 @@
-jQuery(function () {
+$(function () {
+    // Basic
+    $('.dropify').dropify();
+
+    // Translated
+    $('.dropify-fr').dropify({
+        messages: {
+            'default': '点击或拖拽文件到这里',
+            'replace': '点击或拖拽文件到这里来替换文件',
+            'remove': '移除文件',
+            'error': '对不起，你上传的文件太大了'
+        }
+    });
+
+    // Used events
+    var drEvent = $('.dropify-event').dropify();
+
+    drEvent.on('dropify.beforeClear', function (event, element) {
+        return confirm("Do you really want to delete \"" + element.filename + "\" ?");
+    });
+
+    drEvent.on('dropify.afterClear', function (event, element) {
+        alert('File deleted');
+    });
+
+
+    $("#ctlBtn").unbind().one("click", function (e) {
+        e.preventDefault();
+        // var form = $("form")[0];
+        var formData = new FormData();
+        formData.append("ids", "123");
+        formData.append("ids", $("[name='file']").file)
+        console.info(formData.get("ids"))
+        console.info(formData)
+        $.ajax({
+            url: host + "resume/uploadRes",
+            type: "POST",
+            encType: 'multipart/form-data',
+            // dataType: 'json',
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function (data) {
+                var result = data ? JSON.parse(data) : null;
+                console.info("data --> " + result)
+            },
+            error: function () {
+                tip.tipBox({type: 'err', text: "服务器错误！"})
+            }
+        })
+    })
+
+});
+
+
+/*jQuery(function () {
     var $ = jQuery,
         $list = $('#thelist'),
         $btn = $('#ctlBtn'),
@@ -129,7 +184,7 @@ jQuery(function () {
         uploader.reset();
         updateStatus();
     }
-});
+});*/
 
 function fillResumeInfo() {
     return {

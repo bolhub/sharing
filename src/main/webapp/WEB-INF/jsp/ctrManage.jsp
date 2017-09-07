@@ -290,7 +290,7 @@
     <div class="res-box"></div>
 </div>
 
-<div class="input-group col-lg-5 col-lg-offset-2" id="search">
+<div class="input-group col-lg-5 col-lg-offset-2" id="search" hidden="hidden">
     <span class="input-group-addon"><strong>中心</strong></span>
     <input class="form-control input-lg" type="search" placeholder="搜索关键字">
     <span class="input-group-addon btn btn-default"><span class="glyphicon glyphicon-search"></span></span>
@@ -347,7 +347,6 @@
 </div>
 
 <jsp:include page="./modify.jsp"></jsp:include>
-
 </body>
 <script type="text/javascript" src="<%=basePath%>js/jqPaginator.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>

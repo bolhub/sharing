@@ -8,7 +8,9 @@
 
 
 
-    <!--<mvc:resources mapping="/images/**" location="images/"/>-->
+    <!--<mvc:resources mapping="/images/**" location="/images/"/>-->
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -26,6 +28,7 @@
     <mvc:interceptor>
         <mvc:mapping path="/"/>
         <mvc:mapping path="/**"/>
+        <mvc:mapping path="**/*.swf"/>
         <mvc:exclude-mapping path="/login"/>
         <mvc:exclude-mapping path="/home"/>
         <!--<mvc:exclude-mapping path="/logout"/>-->
@@ -37,6 +40,7 @@
         <mvc:exclude-mapping path="/bootstrap-3.3.5-dist/**"/>
         <mvc:exclude-mapping path="/js/**"/>
         <mvc:exclude-mapping path="/images/**"/>
+        <mvc:exclude-mapping path="/fonts/**"/>
         <mvc:exclude-mapping path="/webuploader-0.1.5/**"/>
         <bean class="com.mworld.login.interceptor.LoginInterceptor"/>
     </mvc:interceptor>
@@ -63,4 +67,39 @@
     <!--<property name="maxUploadSize" value="104857600"/>-->
     <!--<property name="maxInMemorySize" value="4096"/>-->
     <!--</bean>-->
+
+    <!--&lt;!&ndash; 文件上传   设置文件大小限制 &ndash;&gt;
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize">
+            <value>2048000</value>
+        </property>
+        <property name="defaultEncoding">
+            <value>UTF-8</value>
+        </property>
+    </bean>
+
+    &lt;!&ndash; 处理ajax请求，将返回的数据转为json &ndash;&gt;
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false" />
+    </bean>
+    <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+
+    <bean id="stringConverter"
+          class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="stringConverter" />
+                <ref bean="jsonConverter" />
+            </list>
+        </property>
+    </bean>
+-->
 </beans>
