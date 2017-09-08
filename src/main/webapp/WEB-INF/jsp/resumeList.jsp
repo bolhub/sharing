@@ -47,6 +47,15 @@
         .resume-find>div{
             margin-bottom: 10px;
         }
+        table{
+            table-layout: fixed;
+        }
+        td{
+            word-break: keep-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +97,7 @@
         <tr>
             <td colspan="2"><input type="checkbox">批量下载</td>
             <td colspan="2">
-                <div hidden>下载</div></td>
+                <div hidden><span class="glyphicon glyphicon-save"></span></div></td>
             <td colspan="6">
                 <ul class="box"></ul>
             </td>

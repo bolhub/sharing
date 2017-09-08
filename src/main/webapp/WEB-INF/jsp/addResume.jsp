@@ -13,7 +13,7 @@
 <title>Title</title>
 <link rel="stylesheet" type="text/css" href="<%=basePath%>webuploader-0.1.5/webuploader.css">
 <link rel="stylesheet" href="<%=basePath%>css/jquery.searchableSelect.css" type="text/css">
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700,900|Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>
+<%--<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700,900|Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>--%>
 <%--<link rel="stylesheet" type="text/css" href="<%=basePath%>css/normalize.css" />--%>
 <%--<link rel="stylesheet" type="text/css" href="<%=basePath%>css/default.css">--%>
 <%--<link rel="stylesheet" href="<%=basePath%>css/demo.css">--%>
@@ -44,6 +44,22 @@
 
     .searchable-select-items {
         max-height: 100px;
+    }
+
+    .dpt-contain {
+        z-index: 1000;
+    }
+
+    .file-contain {
+        z-index: 100;
+    }
+
+    .dpt-contain .searchable-select{
+        z-index: 900;
+    }
+
+    .edu-contain .searchable-select {
+        z-index: 1000;
     }
 
 </style>
@@ -89,7 +105,46 @@
         <div class="form-group"><label for="" class="col-lg-3 control-label">姓名</label>
             <div class="col-lg-5"><input name="resName" type="text" class="form-control"></div>
         </div>
-        <div class="form-group"><label for="" class="col-lg-3 control-label">学历</label>
+        <div class="form-group">
+            <label for="" class="col-lg-3 control-label">姓别</label>
+            <div class="col-lg-5">
+                <div class="radio col-lg-3">
+                    <label for=""><input type="radio" name="gender" value="1" checked>男</label>
+                </div>
+                <div class="radio col-lg-3">
+                    <label for=""><input type="radio" name="gender" value="2">女</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-lg-3 control-label">公开简历</label>
+            <div class="col-lg-5">
+                <div class="radio col-lg-3">
+                    <label for=""><input type="radio" name="privilege" value="2" checked>是</label>
+                </div>
+                <div class="radio col-lg-3">
+                    <label for=""><input type="radio" name="privilege" value="1">否</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group"><label for="" class="col-lg-3 control-label">专业</label>
+            <div class="col-lg-5">
+                <div class="radio col-lg-3" readonly>
+                    <label><input type="radio" name="major" value="计算机" checked>计算机</label>
+                </div>
+                <div class="radio col-lg-5">
+                    <label><input type="radio" name="major" value="非计算机理工">非计算机理工</label>
+                </div>
+                <div class="radio col-lg-3">
+                    <label><input type="radio" name="major" value="其它">其它</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group"><label for="" class="col-lg-3 control-label">毕业时间</label>
+            <div class="col-lg-4"><input name="graduateTime" type="date" class="form-control"></div>
+        </div>
+        <div class="form-group edu-contain"><label for="" class="col-lg-3 control-label">学历</label>
             <div class="col-lg-5">
                 <select name="education">
                     <option value="本科">本科</option>
@@ -100,30 +155,14 @@
                 </select>
             </div>
         </div>
-        <div class="form-group"><label for="" class="col-lg-3 control-label">专业</label>
-            <div class="col-lg-5">
-                <div class="radio" readonly>
-                    <label><input type="radio" name="major" value="计算机">计算机</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" name="major" value="非计算机理工">非计算机理工</label>
-                </div>
-                <div class="radio">
-                    <label><input type="radio" name="major" value="其它">其它</label>
-                </div>
-            </div>
-        </div>
-        <div class="form-group"><label for="" class="col-lg-3 control-label">毕业时间</label>
-            <div class="col-lg-5"><input name="graduateTime" type="date" class="form-control"></div>
-        </div>
-        <div class="form-group"><label for="" class="col-lg-3 control-label">单位编制</label>
+        <div class="form-group dpt-contain"><label for="" class="col-lg-3 control-label">单位编制</label>
             <div class="col-lg-5">
                 <select name="resumeDpt">
                     <option>测试</option>
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group file-contain">
             <label for="" class="col-lg-3 control-label">上传简历</label>
             <div class="col-lg-5">
                 <input type="file" name="resumeFile" id="input-file-now" class="dropify" data-default-file="" />
@@ -149,7 +188,7 @@
 <script type="text/javascript" src="<%=basePath%>js/jquery.uploadify.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/jquery.searchableSelect.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/addResume.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>
+<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>--%>
+<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>--%>
+<%--<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>--%>
 <script type="text/javascript" src="<%=basePath%>js/dropify.min.js"></script>

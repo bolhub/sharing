@@ -41,14 +41,14 @@ $(function () {
                             var item = list[i];
                             var clone = resumeList.listTmp.clone();
                             $("td:eq(0)", clone).text(i + 1);
-                            $("td:eq(1)", clone).text(item.owner);
+                            $("td:eq(1)", clone).text(item.owner).attr("title", item.owner);
                             $("td:eq(2)", clone).text(item.education);
-                            $("td:eq(3)", clone).text(item.major);
+                            $("td:eq(3)", clone).text(item.major).attr("title", item.major);
                             $("td:eq(4)", clone).text(util.formatDate(item.graduateTime, true));
                             $("td:eq(5)", clone).text(util.formatDate(item.uploadTime));
-                            $("td:eq(6)", clone).text(item.ctrName);
-                            $("td:eq(7)", clone).text(item.proName);
-                            $("td:eq(8)", clone).text(item.dptName);
+                            $("td:eq(6)", clone).text(item.ctrName).attr("title", item.ctrName);
+                            $("td:eq(7)", clone).text(item.proName).attr("title", item.proName);
+                            $("td:eq(8)", clone).text(item.dptName).attr("title", item.dptName);
                             $("td:eq(9)", clone).html('<a href="' + host + "resume/" + item.id + '/resumeDown">下载</a>');
                             $(".resume-list").append(clone);
                         }
@@ -85,17 +85,17 @@ $(function () {
                 $("#resume-list-tb thead tr td:first-child,#resume-list-tb tbody tr td:first-child").html('<input type="checkbox">')
                 $("#resume-list-tb tfoot tr td:eq(1) div").removeAttr("hidden");
                 $("#resume-list-tb thead tr td:first-child").unbind().bind("click", function () {
-                    if ($(this).find("input[type='checkbox']").is(":checked")){
-                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").attr("checked", "checked");
+                    if ($(this).find("input[type='checkbox']").is(":checked")) {
+                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").prop("checked", true);
                     } else {
-                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").removeAttr("checked");
+                        $("#resume-list-tb tbody tr td:first-child").find("input[type='checkbox']").prop("checked", false);
                     }
                 });
                 $("#resume-list-tb tbody tr td:first-child").unbind().bind("click", function () {
-                    if ($("#resume-list-tb tbody tr td:first-child input[type='checkbox']:checked").length == $("#resume-list-tb tbody tr").length){
-                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").attr("checked", "checked");
+                    if ($("#resume-list-tb tbody tr td:first-child input[type='checkbox']:checked").length == $("#resume-list-tb tbody tr").length) {
+                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").prop("checked", true);
                     } else {
-                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").removeAttr("checked");
+                        $("#resume-list-tb thead tr td:first-child").find("input[type='checkbox']").prop("checked", false);
                     }
                 })
 

@@ -5,6 +5,7 @@ import java.util.Date;
 public class Resume {
     private String id;
     private String owner;
+    private Integer gender;
     private String major;
     private Date graduateTime;
     private String education;

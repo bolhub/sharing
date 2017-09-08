@@ -261,16 +261,6 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
     }
 
-   /* @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
-    public void upload(@RequestParam("file")MultipartFile file, HttpServletRequest request, HttpServletResponse response){
-        if (file == null){
-            responseMsg(response, new Message(false, "None of file upload"));
-            return;
-        }
-        logger.info("UPLOAD -------------------------------");
-//        file.isEmpty()
-    }*/
-
     @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
     public void uploadRe(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -287,15 +277,15 @@ public class ResumeController extends BaseController {
                 if ("resumeFile".equals(item.getFieldName())) {
                     tmpFileItem = item;
                 } else if ("graduateTime".equals(item.getFieldName())) {
-                    graduateTime = format.parse(item.getString());
+                    graduateTime = StringUtils.isEmpty(item.getString()) ? null : format.parse(item.getString());
                 } else if ("major".equals(item.getFieldName())) {
-                    major = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    major = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
                 } else if ("resName".equals(item.getFieldName())) {
-                    resName = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    resName = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
                 } else if ("resumeDpt".equals(item.getFieldName())) {
-                    dptId = NumberUtils.toInt(item.getString());
+                    dptId = StringUtils.isEmpty(item.getString()) ? null : NumberUtils.toInt(item.getString());
                 } else if ("education".equals(item.getFieldName())) {
-                    education = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    education = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
                 }
             }
 
@@ -310,7 +300,7 @@ public class ResumeController extends BaseController {
                 tmpFile.mkdirs();
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
-            String destName = new String(originName.substring(0, tmpFileItem.getName().lastIndexOf(".")) + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf(".")));
+            String destName = getLoginUser(request).getId() +"_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
             ResumeRequestVo requestVo = new ResumeRequestVo();
@@ -322,7 +312,7 @@ public class ResumeController extends BaseController {
             requestVo.setMajor(major);
             requestVo.setGraduateTime(graduateTime);
             Integer updateCnt = resumeService.addResume(requestVo);
-            if (updateCnt == null || updateCnt <= 0){
+            if (updateCnt == null || updateCnt <= 0) {
                 responseMsg(response, new Message(false, NoticeConst.DATA_SAVE_FAIL));
                 return;
             }
