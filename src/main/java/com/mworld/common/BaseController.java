@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,14 @@ import java.util.UUID;
  * Created by bolom on 2017/8/9.
  */
 public class BaseController {
+    private final static String DEFAULT_CONTEXT_ENCODING = "text/html;charset=UTF-8";
+    private String contextEncoding = DEFAULT_CONTEXT_ENCODING;
+
+    public void setContextEncoding(String contextEncoding) {
+        contextEncoding = StringUtils.isEmpty(contextEncoding) ? DEFAULT_CONTEXT_ENCODING : contextEncoding;
+        this.contextEncoding = contextEncoding;
+    }
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -40,6 +49,8 @@ public class BaseController {
     }
 
     public void responseMsg(HttpServletResponse response, Message message) {
+        response.setContentType(this.contextEncoding);
+        logger.info(response.getContentType());
         try {
             response.getWriter().write(JSON.toJSONString(message));
         } catch (Exception e) {

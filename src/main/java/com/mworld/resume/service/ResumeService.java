@@ -30,4 +30,6 @@ public interface ResumeService {
     public ResumeMapVo findResumeById(String id);
 
     public Integer updateResume(ResumeRequestVo requestVo);
+
+    public List<ResumeMapVo> findUploadResumes();
 }

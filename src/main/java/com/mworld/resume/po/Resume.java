@@ -5,6 +5,7 @@ import java.util.Date;
 public class Resume {
     private String id;
     private String owner;
+    private Gender gender;
     private String major;
     private Date graduateTime;
     private String education;
@@ -14,6 +15,7 @@ public class Resume {
     private String destName;
     private String uploaderId;
     private Date uploadTime;
+    private Privilege privilege;
 
     public String getEducation() {
         return education;
@@ -103,4 +105,19 @@ public class Resume {
         this.major = major;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public Privilege getPrivilege() {
+        return privilege;
+    }
+
+    public void setPrivilege(Privilege privilege) {
+        this.privilege = privilege;
+    }
 }

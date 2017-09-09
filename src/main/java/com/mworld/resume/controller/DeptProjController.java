@@ -49,7 +49,7 @@ public class DeptProjController extends BaseController {
                     responseMsg(response, new Message<>(false, NoticeConst.NO_DATA_NOTICE));
                     return;
                 }
-                response.setContentType("text/html;charset=UTF-8");
+                
                 responseMsg(response, new Message<>(new ResponseVo<>(dpts, count), true, NoticeConst.GET_DATA_NOTICE));
                 break;
             case "dpsTotal":
@@ -58,7 +58,7 @@ public class DeptProjController extends BaseController {
                     responseMsg(response, new Message<>(false, NoticeConst.NO_DATA_NOTICE));
                     return;
                 }
-                response.setContentType("text/html;charset=UTF-8");
+                
                 responseMsg(response, new Message<>(dptsTotal, true, NoticeConst.GET_DATA_NOTICE));
                 break;
             case "proOfDpt":
@@ -77,7 +77,7 @@ public class DeptProjController extends BaseController {
                     responseMsg(response, new Message<>(false, NoticeConst.NO_DATA_NOTICE));
                     return;
                 }
-                response.setContentType("text/html;charset=UTF-8");
+                
                 responseMsg(response, new Message<>(new ResponseVo<>(projects, count), true, NoticeConst.GET_DATA_NOTICE));
                 break;
             case "proOfResume":
@@ -97,7 +97,7 @@ public class DeptProjController extends BaseController {
                     responseMsg(response, new Message<>(false, NoticeConst.NO_DATA_NOTICE));
                     return;
                 }
-                response.setContentType("text/html;charset=UTF-8");
+                
                 responseMsg(response, new Message<>(new ResponseVo<>(resumes, count), true, NoticeConst.GET_DATA_NOTICE));
                 break;
         }

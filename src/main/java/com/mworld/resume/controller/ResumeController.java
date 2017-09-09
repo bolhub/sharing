@@ -1,38 +1,33 @@
 package com.mworld.resume.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.mworld.common.BaseController;
 import com.mworld.common.NoticeConst;
 import com.mworld.common.exception.NotLoginException;
+import com.mworld.resume.po.Gender;
+import com.mworld.resume.po.Privilege;
 import com.mworld.resume.po.Resume;
 import com.mworld.resume.service.ResumeService;
 import com.mworld.common.Message;
 import com.mworld.common.ResponseVo;
 import com.mworld.resume.vo.ResumeMapVo;
 import com.mworld.resume.vo.ResumeRequestVo;
-import com.mworld.util.DocConverter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -122,7 +117,7 @@ public class ResumeController extends BaseController {
 
             List<ResumeMapVo> list = resumeService.findResumeDetail(options, start, size);
             if (!CollectionUtils.isEmpty(list)) {
-                response.setContentType("text/html;charset=UTF-8");
+                
                 responseMsg(response, new Message(new ResponseVo<>(list, t), true, NoticeConst.GET_DATA_NOTICE));
                 return;
             }
@@ -132,7 +127,7 @@ public class ResumeController extends BaseController {
 //            List<Resume> resumes = resumeService.getResumes(options, start, size);
 //            if (!CollectionUtils.isEmpty(resumes)) {
 //                logger.info("Resume List:{}", JSON.toJSON(resumes));
-//                response.setContentType("text/html;charset=UTF-8");
+//                
 //                responseMsg(response, new Message(new ResponseVo<>(resumes, count), true, NoticeConst.NO_DATA_NOTICE));
 //                return;
 //            }
@@ -183,7 +178,7 @@ public class ResumeController extends BaseController {
         File file = new File("D:/test.swf");
         logger.info(file.getCanonicalPath());
         logger.info(file.getAbsolutePath());
-        response.setContentType("text/html;charset=UTF-8");
+        
         responseMsg(response, new Message<>(true, file.getCanonicalPath()));
     }
 
@@ -212,7 +207,7 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        response.setContentType("text/html;charset=UTF-8");
+        
         responseMsg(response, new Message(new ResponseVo<>(list, cnt), true, NoticeConst.GET_DATA_NOTICE));
     }
 
@@ -229,7 +224,7 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        response.setContentType("text/html;charset=UTF-8");
+        
         responseMsg(response, new Message(resume, true, NoticeConst.GET_DATA_NOTICE));
     }
 
@@ -261,16 +256,6 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
     }
 
-   /* @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
-    public void upload(@RequestParam("file")MultipartFile file, HttpServletRequest request, HttpServletResponse response){
-        if (file == null){
-            responseMsg(response, new Message(false, "None of file upload"));
-            return;
-        }
-        logger.info("UPLOAD -------------------------------");
-//        file.isEmpty()
-    }*/
-
     @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
     public void uploadRe(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -282,20 +267,26 @@ public class ResumeController extends BaseController {
             Integer dptId = null;
             Date graduateTime = null;
             FileItem tmpFileItem = null;
+            Gender gender = null;
+            Privilege privilege = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             for (FileItem item : list) {
                 if ("resumeFile".equals(item.getFieldName())) {
                     tmpFileItem = item;
                 } else if ("graduateTime".equals(item.getFieldName())) {
-                    graduateTime = format.parse(item.getString());
+                    graduateTime = StringUtils.isEmpty(item.getString()) ? null : format.parse(item.getString());
                 } else if ("major".equals(item.getFieldName())) {
-                    major = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    major = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
                 } else if ("resName".equals(item.getFieldName())) {
-                    resName = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    resName = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
                 } else if ("resumeDpt".equals(item.getFieldName())) {
-                    dptId = NumberUtils.toInt(item.getString());
+                    dptId = StringUtils.isEmpty(item.getString()) ? null : NumberUtils.toInt(item.getString());
                 } else if ("education".equals(item.getFieldName())) {
-                    education = new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                    education = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
+                } else if ("gender".equals(item.getFieldName())){
+                    gender = StringUtils.isEmpty(item.getString()) ? null : Gender.valueOf(new String(item.getString().getBytes("ISO-8859-1"), "UTF-8"));
+                } else if ("privilege".equals(item.getFieldName())){
+                    privilege = StringUtils.isEmpty(item.getString()) ? null : Privilege.valueOf(new String(item.getString().getBytes("ISO-8859-1"), "UTF-8"));
                 }
             }
 
@@ -310,7 +301,7 @@ public class ResumeController extends BaseController {
                 tmpFile.mkdirs();
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
-            String destName = new String(originName.substring(0, tmpFileItem.getName().lastIndexOf(".")) + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf(".")));
+            String destName = getLoginUser(request).getId() +"_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
             ResumeRequestVo requestVo = new ResumeRequestVo();
@@ -318,11 +309,15 @@ public class ResumeController extends BaseController {
             requestVo.setDptId(dptId);
             requestVo.setDestName(destName);
             requestVo.setFileName(originName);
+            requestVo.setFileType(originName.substring(originName.lastIndexOf(".")));
+            requestVo.setFilePath(tmpFileDir);
             requestVo.setEducation(education);
             requestVo.setMajor(major);
             requestVo.setGraduateTime(graduateTime);
+            requestVo.setGender(gender);
+            requestVo.setPrivilege(privilege);
             Integer updateCnt = resumeService.addResume(requestVo);
-            if (updateCnt == null || updateCnt <= 0){
+            if (updateCnt == null || updateCnt <= 0) {
                 responseMsg(response, new Message(false, NoticeConst.DATA_SAVE_FAIL));
                 return;
             }
@@ -330,6 +325,12 @@ public class ResumeController extends BaseController {
         }
 
 
+    }
+
+    @RequestMapping(value = "owenRes", method = RequestMethod.POST)
+    public void ModifyResumeList(HttpServletRequest request, HttpServletResponse response){
+        List<ResumeMapVo> resumeMapVos = resumeService.findUploadResumes();
+        responseMsg(response, new Message(resumeService.findUploadResumes(), true, NoticeConst.GET_DATA_NOTICE));
     }
 }
 

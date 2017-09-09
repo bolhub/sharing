@@ -16,8 +16,10 @@ public class ResumeMapVo extends Resume {
 //        this.dps = dps;
 //    }
     private Integer dptId;
-    private String dptName;
-    private String proName;
+    private String dptName;//项目编制
+    private String proName;//项目名
+    private String ctrName;//人员编制
+    private String sex;
 
     public Integer getDptId() {
         return dptId;
@@ -41,5 +43,13 @@ public class ResumeMapVo extends Resume {
 
     public void setProName(String proName) {
         this.proName = proName;
+    }
+
+    public String getCtrName() {
+        return ctrName;
+    }
+
+    public void setCtrName(String ctrName) {
+        this.ctrName = ctrName;
     }
 }
