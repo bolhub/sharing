@@ -11,6 +11,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +28,9 @@ import java.util.UUID;
  */
 public class BaseController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private Config Config;
 
     public User getLoginUser(HttpServletRequest request) throws NotLoginException {
         Object obj = request.getSession().getAttribute("login_user");
@@ -120,7 +125,7 @@ public class BaseController {
     }
 
     public String getTempFilePath(String dir) {
-        return "f:\\sharing/" + dir;
+        return Config.FILES_COB + dir;
     }
 
     public void download(HttpServletResponse response, File file, String downName) {

@@ -22,7 +22,7 @@
     <mvc:default-servlet-handler/>
 
 
-    <contex:component-scan base-package="com.mworld.*.controller" />
+    <contex:component-scan base-package="com.mworld.*.controller,com.mworld.common" />
 
     <mvc:interceptors>
     <mvc:interceptor>
