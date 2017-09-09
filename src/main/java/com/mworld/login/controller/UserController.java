@@ -128,7 +128,7 @@ public class UserController extends BaseController {
         }
         List<User> list = userService.findUsers(keyword, findRole);
         if (!CollectionUtils.isEmpty(list)) {
-            response.setContentType("text/html;charset=UTF-8");
+            
             responseMsg(response, new Message<>(new ResponseVo<>(list, counts), true, "Success"));
             return;
         }

@@ -127,6 +127,7 @@
         ON m.dpt_prj_id=dp.id
         WHERE dp.dpt_id=#{ctrId}
         AND dp.prj_id=#{proId}
+        AND r.privilege=2
         <if test="keyword != null and keyword !=''">
             AND r.owner LIKE concat('%', concat(#{keyword}, '%'))
         </if>
@@ -144,6 +145,7 @@
         ON m.dpt_prj_id=dp.id
         WHERE dp.dpt_id=#{ctrId}
         AND dp.prj_id=#{proId}
+        AND r.privilege=2
         <if test="keyword != null and keyword !=''">
             AND r.owner LIKE concat('%', concat(#{keyword}, '%'))
         </if>

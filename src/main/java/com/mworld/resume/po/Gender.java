@@ -1,6 +1,8 @@
 package com.mworld.resume.po;
 
-public enum Gender {
+import com.mworld.common.util.IntEnum;
+
+public enum Gender implements IntEnum<Gender> {
     MALE("男", 1), FEMALE("女", 2);
     private String gender;
     private Integer value;
@@ -16,5 +18,15 @@ public enum Gender {
 
     public Integer getValue() {
         return value;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return this.gender;
+    }
+
+    @Override
+    public Integer getIntValue() {
+        return this.value;
     }
 }

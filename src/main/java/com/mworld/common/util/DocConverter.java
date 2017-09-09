@@ -1,4 +1,4 @@
-package com.mworld.util;
+package com.mworld.common.util;
 
 import com.artofsolving.jodconverter.DocumentConverter;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;

@@ -17,28 +17,27 @@
         uploader_id `uploaderId`,
         upload_time `uploadTime`
         FROM resume
-        <where>
-            <if test="options!= null and options.from != null and options.from != ''">
-                AND graduate_time >= #{options.from}
-            </if>
-            <if test="options!=null and options.to != null and options.to != ''">
-                AND graduate_time <![CDATA[<=]]> #{options.to}
-            </if>
-            <!--<if test="options!= null and options.education != null and options.education != ''">
-                AND education=#{options.education}
-            </if>
-            <if test="options!= null and options.aplyProject !=null and options.aplyProject != ''">
-                AND aply_project LIKE concat('%',concat(#{options.aplyProject},'%'))
-            </if>
-            <if test="resume!=null and resume.owner !=null and resume.owner != ''">
-                AND owner LIKE concat('%',concat(#{options.owner},'%'))
-            </if>-->
-            <if test="options!=null and options.keyword !=null and options.keyword !=''">
-                AND education=#{options.keyword}
-                OR aply_project LIKE concat('%',concat(#{options.keyword},'%'))
-                OR owner LIKE concat('%',concat(#{options.keyword},'%'))
-            </if>
-        </where>
+        WHERE privilege=2
+        <if test="options!= null and options.from != null and options.from != ''">
+            AND graduate_time >= #{options.from}
+        </if>
+        <if test="options!=null and options.to != null and options.to != ''">
+            AND graduate_time <![CDATA[<=]]> #{options.to}
+        </if>
+        <!--<if test="options!= null and options.education != null and options.education != ''">
+            AND education=#{options.education}
+        </if>
+        <if test="options!= null and options.aplyProject !=null and options.aplyProject != ''">
+            AND aply_project LIKE concat('%',concat(#{options.aplyProject},'%'))
+        </if>
+        <if test="resume!=null and resume.owner !=null and resume.owner != ''">
+            AND owner LIKE concat('%',concat(#{options.owner},'%'))
+        </if>-->
+        <if test="options!=null and options.keyword !=null and options.keyword !=''">
+            AND education=#{options.keyword}
+            OR aply_project LIKE concat('%',concat(#{options.keyword},'%'))
+            OR owner LIKE concat('%',concat(#{options.keyword},'%'))
+        </if>
         ORDER BY upload_time DESC
         limit #{start},#{size};
     </select>
@@ -47,28 +46,27 @@
         SELECT
         COUNT(id)
         FROM resume
-        <where>
-            <if test="options!= null and options.from != null and options.from != ''">
-                AND graduate_time >= #{options.from}
-            </if>
-            <if test="options!=null and options.to != null and options.to != ''">
-                AND graduate_time <![CDATA[<=]]> #{options.to}
-            </if>
-            <!--<if test="resume!= null and resume.education != null and resume.education != ''">
-                AND education=#{resume.education}
-            </if>
-            <if test="resume!= null and resume.aplyProject !=null and resume.aplyProject != ''">
-                AND aply_project LIKE concat('%',concat(#{resume.aplyProject},'%'))
-            </if>
-            <if test="resume!=null and resume.owner !=null and resume.owner != ''">
-                AND owner LIKE concat('%',concat(#{resume.owner},'%'))
-            </if>-->
-            <if test="options!=null and options.keyword !=null and options.keyword !=''">
-                AND education=#{options.keyword}
-                OR aply_project LIKE concat('%',concat(#{options.keyword},'%'))
-                OR owner LIKE concat('%',concat(#{options.keyword},'%'))
-            </if>
-        </where>
+        WHERE privilege=2
+        <if test="options!= null and options.from != null and options.from != ''">
+            AND graduate_time >= #{options.from}
+        </if>
+        <if test="options!=null and options.to != null and options.to != ''">
+            AND graduate_time <![CDATA[<=]]> #{options.to}
+        </if>
+        <!--<if test="resume!= null and resume.education != null and resume.education != ''">
+            AND education=#{resume.education}
+        </if>
+        <if test="resume!= null and resume.aplyProject !=null and resume.aplyProject != ''">
+            AND aply_project LIKE concat('%',concat(#{resume.aplyProject},'%'))
+        </if>
+        <if test="resume!=null and resume.owner !=null and resume.owner != ''">
+            AND owner LIKE concat('%',concat(#{resume.owner},'%'))
+        </if>-->
+        <if test="options!=null and options.keyword !=null and options.keyword !=''">
+            AND education=#{options.keyword}
+            OR aply_project LIKE concat('%',concat(#{options.keyword},'%'))
+            OR owner LIKE concat('%',concat(#{options.keyword},'%'))
+        </if>
     </select>
 
     <select id="findResumeFileById" resultType="Resume">
@@ -87,7 +85,7 @@
             SELECT replace(uuid(), '-', '') FROM dual;
         </selectKey>
         INSERT INTO resume(
-        id,owner,education,major,graduate_time,dpt_id,file_name,file_type,file_path,dest_name,uploader_id,upload_time
+        id,owner,education,major,graduate_time,dpt_id,file_name,file_type,file_path,dest_name,uploader_id,upload_time,gender,privilege
         )
         VALUES
         <!--<foreach collection="list" item="item" open="(" close=")" separator=",">-->
@@ -104,7 +102,10 @@
         #{filePath, jdbcType=VARCHAR},
         #{destName, jdbcType=VARCHAR},
         #{uploaderId, jdbcType=VARCHAR},
-        now())
+        now(),
+        #{gender, typeHandler=com.mworld.common.util.IntEnumTypeHandler},
+        #{privilege, typeHandler=com.mworld.common.util.IntEnumTypeHandler}
+        )
     </insert>
 
     <select id="findResumeDetail" parameterType="com.mworld.resume.vo.ResumeRequestVo"
@@ -130,24 +131,23 @@
         left join department d on dp.dpt_id=d.id
         left join project p on dp.prj_id=p.id
         LEFT JOIN department d2 on r.dpt_id=d2.id
-        <where>
-            <if test="options != null">
-                <if test="options.from != null">
-                    AND r.graduate_time >= #{options.from}
-                </if>
-                <if test="options.to != null">
-                    AND r.graduate_time <![CDATA[<=]]> #{options.to}
-                </if>
-                <if test="options.keyword != null and options.keyword != ''">
-                    AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR r.major LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR d.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR d2.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR p.pro_name LIKE concat('%', concat(#{options.keyword},'%'))
-                </if>
+        WHERE privilege=2
+        <if test="options != null">
+            <if test="options.from != null">
+                AND r.graduate_time >= #{options.from}
             </if>
-        </where>
+            <if test="options.to != null">
+                AND r.graduate_time <![CDATA[<=]]> #{options.to}
+            </if>
+            <if test="options.keyword != null and options.keyword != ''">
+                AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
+                OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
+                OR r.major LIKE concat('%', concat(#{options.keyword},'%'))
+                OR d.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
+                OR d2.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
+                OR p.pro_name LIKE concat('%', concat(#{options.keyword},'%'))
+            </if>
+        </if>
         ORDER BY r.upload_time DESC,r.owner
         limit #{start},#{size};
     </select>
@@ -161,24 +161,23 @@
         left join department d on dp.dpt_id=d.id
         left join project p on dp.prj_id=p.id
         LEFT JOIN department d2 on r.dpt_id=d2.id
-        <where>
-            <if test="options != null">
-                <if test="options.from != null">
-                    AND r.graduate_time >= #{options.from}
-                </if>
-                <if test="options.to != null">
-                    AND r.graduate_time <![CDATA[<=]]> #{options.to}
-                </if>
-                <if test="options.keyword != null and options.keyword != ''">
-                    AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR r.major LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR d.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR d2.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
-                    OR p.pro_name LIKE concat('%', concat(#{options.keyword},'%'))
-                </if>
+        WHERE privilege=2
+        <if test="options != null">
+            <if test="options.from != null">
+                AND r.graduate_time >= #{options.from}
             </if>
-        </where>
+            <if test="options.to != null">
+                AND r.graduate_time <![CDATA[<=]]> #{options.to}
+            </if>
+            <if test="options.keyword != null and options.keyword != ''">
+                AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
+                OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
+                OR r.major LIKE concat('%', concat(#{options.keyword},'%'))
+                OR d.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
+                OR d2.dpt_name LIKE concat('%', concat(#{options.keyword},'%'))
+                OR p.pro_name LIKE concat('%', concat(#{options.keyword},'%'))
+            </if>
+        </if>
     </select>
 
     <select id="findAllowResumes" parameterType="com.mworld.resume.vo.ResumeRequestVo"
@@ -196,6 +195,7 @@
         select 1 from dpt_prj_res_mid dp
         left join dpt_prj_mid m on dp.dpt_prj_id=m.id
         where dp.res_id=r.id and m.dpt_id=#{options.dptId} and m.prj_id=#{options.proId})
+        and privilege=2
         <if test="options.keyword != null and options.keyword !=''">
             AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
             OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
@@ -215,6 +215,7 @@
         select 1 from dpt_prj_res_mid dp
         left join dpt_prj_mid m on dp.dpt_prj_id=m.id
         where dp.res_id=r.id and m.dpt_id=#{options.dptId} and m.prj_id=#{options.proId})
+        and privilege=2
         <if test="options.keyword != null and options.keyword !=''">
             AND r.owner LIKE concat('%', concat(#{options.keyword},'%'))
             OR r.education LIKE concat('%', concat(#{options.keyword},'%'))
@@ -255,4 +256,44 @@
         </trim>
         WHERE id=#{id}
     </update>
+
+    <resultMap id="resResultMap" type="com.mworld.resume.vo.ResumeMapVo">
+        <id property="id" column="id"/>
+        <result property="owner" column="owner"/>
+        <result property="major" column="major"/>
+        <result property="education" column="education"/>
+        <result property="fileName" column="fileName"/>
+        <result property="fileType" column="fileType"/>
+        <result property="filePath" column="filePath"/>
+        <result property="destName" column="destName"/>
+        <result property="uploaderId" column="uploaderId"/>
+        <result property="graduateTime" column="graduateTime"/>
+        <result property="uploadTime" column="uploadTime"/>
+        <result property="dptId" column="dptId"/>
+        <result property="privilege" column="privilege"/>
+        <result property="gender" column="gender" typeHandler="com.mworld.common.util.IntEnumTypeHandler"
+                javaType="com.mworld.resume.po.Gender"/>
+        <result property="privilege" column="privilege" typeHandler="com.mworld.common.util.IntEnumTypeHandler"
+                javaType="com.mworld.resume.po.Privilege"/>
+    </resultMap>
+
+    <select id="findUploadResumes" resultMap="resResultMap">
+        select
+         r.id `id`,
+         r.owner `owner`,
+         r.major `major`,
+         r.education `education`,
+         r.file_name `fileName`,
+         r.file_type `fileType`,
+         r.file_path `filePath`,
+         r.dest_name `r.destName`,
+         r.uploader_id `uploaderId`,
+         r.graduate_time `graduateTime`,
+         r.upload_time `uploadTime`,
+         r.gender `gender`,
+         r.privilege `privilege`,
+         d.dpt_name `dptName`
+        from resume r
+        LEFT JOIN department d ON r.dpt_id=d.id
+    </select>
 </mapper>

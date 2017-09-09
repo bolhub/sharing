@@ -27,4 +27,7 @@ public interface ResumeDao {
     public ResumeMapVo findResumeById(@Param("id") String id);
 
     public Integer updateResume(ResumeRequestVo requestVo);
+
+    public List<ResumeMapVo> findUploadResumes();
+
 }

@@ -84,4 +84,9 @@ public class ResumeServiceImpl implements ResumeService {
     public Integer updateResume(ResumeRequestVo requestVo) {
         return resumeDao.updateResume(requestVo);
     }
+
+    @Override
+    public List<ResumeMapVo> findUploadResumes() {
+        return resumeDao.findUploadResumes();
+    }
 }

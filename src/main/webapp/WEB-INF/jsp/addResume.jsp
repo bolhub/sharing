@@ -109,10 +109,10 @@
             <label for="" class="col-lg-3 control-label">姓别</label>
             <div class="col-lg-5">
                 <div class="radio col-lg-3">
-                    <label for=""><input type="radio" name="gender" value="1" checked>男</label>
+                    <label for=""><input type="radio" name="gender" value="MALE" checked>男</label>
                 </div>
                 <div class="radio col-lg-3">
-                    <label for=""><input type="radio" name="gender" value="2">女</label>
+                    <label for=""><input type="radio" name="gender" value="FEMALE">女</label>
                 </div>
             </div>
         </div>
@@ -120,10 +120,10 @@
             <label for="" class="col-lg-3 control-label">公开简历</label>
             <div class="col-lg-5">
                 <div class="radio col-lg-3">
-                    <label for=""><input type="radio" name="privilege" value="2" checked>是</label>
+                    <label for=""><input type="radio" name="privilege" value="COMMONABLE" checked>是</label>
                 </div>
                 <div class="radio col-lg-3">
-                    <label for=""><input type="radio" name="privilege" value="1">否</label>
+                    <label for=""><input type="radio" name="privilege" value="PERSONAL">否</label>
                 </div>
             </div>
         </div>

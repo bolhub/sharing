@@ -19,6 +19,7 @@ public class ResumeMapVo extends Resume {
     private String dptName;//项目编制
     private String proName;//项目名
     private String ctrName;//人员编制
+    private String sex;
 
     public Integer getDptId() {
         return dptId;

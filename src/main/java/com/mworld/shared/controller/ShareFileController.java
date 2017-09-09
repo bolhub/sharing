@@ -107,7 +107,7 @@ public class ShareFileController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        response.setContentType("text/html;charset=UTF-8");
+        
         responseMsg(response, new Message(new ResponseVo<>(shareFiles, counts),true, NoticeConst.GET_DATA_NOTICE));
 
     }
