@@ -3,6 +3,7 @@ package com.mworld.resume.service;
 import com.mworld.resume.po.Resume;
 import com.mworld.resume.vo.ResumeMapVo;
 import com.mworld.resume.vo.ResumeRequestVo;
+import jdk.nashorn.internal.ir.IdentNode;
 
 import java.util.List;
 
@@ -31,5 +32,7 @@ public interface ResumeService {
 
     public Integer updateResume(ResumeRequestVo requestVo);
 
-    public List<ResumeMapVo> findUploadResumes();
+    public List<ResumeMapVo> findUploadResumes(String uploaderId, String keyword, Integer start, Integer size);
+
+    public Integer findUploadResumesCnt(String uploaderId, String keyword);
 }

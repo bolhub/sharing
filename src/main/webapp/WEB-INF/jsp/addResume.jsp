@@ -63,6 +63,14 @@
     }
 
 </style>
+<script type="text/javascript" src="<%=basePath%>webuploader-0.1.5/webuploader.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/jquery.uploadify.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/jquery.searchableSelect.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/addResume.js"></script>
+<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>--%>
+<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>--%>
+<%--<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>--%>
+<script type="text/javascript" src="<%=basePath%>js/dropify.min.js"></script>
 <section>
     <div class="col-lg-8 col-lg-offset-2">
         <div class="page-header">
@@ -184,11 +192,4 @@
 </section>
 
 
-<script type="text/javascript" src="<%=basePath%>webuploader-0.1.5/webuploader.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/jquery.uploadify.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/jquery.searchableSelect.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/addResume.js"></script>
-<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>--%>
-<%--<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>--%>
-<%--<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>--%>
-<script type="text/javascript" src="<%=basePath%>js/dropify.min.js"></script>
+

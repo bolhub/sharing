@@ -327,10 +327,16 @@ public class ResumeController extends BaseController {
 
     }
 
-    @RequestMapping(value = "owenRes", method = RequestMethod.POST)
-    public void ModifyResumeList(HttpServletRequest request, HttpServletResponse response){
-        List<ResumeMapVo> resumeMapVos = resumeService.findUploadResumes();
-        responseMsg(response, new Message(resumeService.findUploadResumes(), true, NoticeConst.GET_DATA_NOTICE));
+    @RequestMapping(value = "owenRes/{start}/{size}", method = RequestMethod.POST)
+    public void ModifyResumeList(HttpServletRequest request, HttpServletResponse response, @PathVariable("start") Integer start, @PathVariable("size") Integer size) throws NotLoginException{
+        String keyword = request.getParameter("keyword");
+        Integer cnt = resumeService.findUploadResumesCnt(getLoginUser(request).getId(), keyword);
+        if (cnt == null || cnt <= 0){
+            responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
+            return;
+        }
+        List<ResumeMapVo> resumeMapVos = resumeService.findUploadResumes(getLoginUser(request).getId(), keyword, start, size);
+        responseMsg(response, new Message(new ResponseVo<>(resumeMapVos, cnt), true, NoticeConst.GET_DATA_NOTICE ));
     }
 }
 

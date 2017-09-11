@@ -86,7 +86,15 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeMapVo> findUploadResumes() {
-        return resumeDao.findUploadResumes();
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<ResumeMapVo> findUploadResumes(String uploaderId, String keyword, Integer start, Integer size) {
+        PageUtil pageUtil = new PageUtil(start, size);
+        return resumeDao.findUploadResumes(uploaderId, keyword, pageUtil.getStart(), pageUtil.getSize());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer findUploadResumesCnt(String uploaderId, String keyword) {
+        return resumeDao.findUploadResumesCnt(uploaderId, keyword);
     }
 }

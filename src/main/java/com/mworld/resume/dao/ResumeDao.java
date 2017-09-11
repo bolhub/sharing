@@ -28,6 +28,8 @@ public interface ResumeDao {
 
     public Integer updateResume(ResumeRequestVo requestVo);
 
-    public List<ResumeMapVo> findUploadResumes();
+    public List<ResumeMapVo> findUploadResumes(@Param("uploaderId") String uploaderId, @Param("keyword") String keyword, @Param("start") Integer start, @Param("size") Integer size);
+
+    public Integer findUploadResumesCnt(@Param("uploaderId") String uploaderId, @Param("keyword") String keyword);
 
 }
