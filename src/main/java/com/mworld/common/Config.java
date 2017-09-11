@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Config {
-    @Value("${cob}")
+    @Value("${uploadDiskDir}")
     public String FILES_COB;
 }

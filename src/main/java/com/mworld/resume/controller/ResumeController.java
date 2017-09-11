@@ -332,5 +332,9 @@ public class ResumeController extends BaseController {
         List<ResumeMapVo> resumeMapVos = resumeService.findUploadResumes();
         responseMsg(response, new Message(resumeService.findUploadResumes(), true, NoticeConst.GET_DATA_NOTICE));
     }
+
+    public void batchDown(){
+
+    }
 }
 
