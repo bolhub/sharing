@@ -270,7 +270,6 @@
         <result property="graduateTime" column="graduateTime"/>
         <result property="uploadTime" column="uploadTime"/>
         <result property="dptId" column="dptId"/>
-        <result property="privilege" column="privilege"/>
         <result property="gender" column="gender" typeHandler="com.mworld.common.util.IntEnumTypeHandler"
                 javaType="com.mworld.resume.po.Gender"/>
         <result property="privilege" column="privilege" typeHandler="com.mworld.common.util.IntEnumTypeHandler"
@@ -295,5 +294,23 @@
          d.dpt_name `dptName`
         from resume r
         LEFT JOIN department d ON r.dpt_id=d.id
+        WHERE r.uploader_id=#{uploaderId}
+        <if test="keyword != null and keyword !=''">
+            AND r.owner LIKE concat('%', concat(#{keyword}, '%'))
+        </if>
+        limit #{start},#{size}
     </select>
+
+    <select id="findUploadResumesCnt" resultMap="resResultMap">
+        select
+         count(r.id)
+        from resume r
+        LEFT JOIN department d ON r.dpt_id=d.id
+        WHERE r.uploader_id=#{uploaderId}
+        <if test="keyword != null and keyword !=''">
+            AND r.owner LIKE concat('%', concat(#{keyword}, '%'))
+        </if>
+    </select>
+
+
 </mapper>

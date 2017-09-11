@@ -123,6 +123,7 @@ $(function () {
     $.ajax({
         url: host + 'organize/dpsTotal/searchList',
         type: 'POST',
+        async: false,
         data: {dptName: null},
         success: function (data) {
             if (data) {
