@@ -301,9 +301,9 @@
         limit #{start},#{size}
     </select>
 
-    <select id="findUploadResumesCnt" resultMap="resResultMap">
+    <select id="findUploadResumesCnt" resultType="int">
         select
-         count(r.id)
+         count(1)
         from resume r
         LEFT JOIN department d ON r.dpt_id=d.id
         WHERE r.uploader_id=#{uploaderId}

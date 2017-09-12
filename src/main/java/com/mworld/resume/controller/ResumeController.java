@@ -339,8 +339,8 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(new ResponseVo<>(resumeMapVos, cnt), true, NoticeConst.GET_DATA_NOTICE ));
     }
 
-    public void batchDown(){
-
+    public void batchDown(HttpServletRequest request, HttpServletResponse response){
+        
     }
 }
 

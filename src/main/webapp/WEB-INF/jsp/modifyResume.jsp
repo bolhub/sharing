@@ -11,6 +11,7 @@
 %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <link href="<%=basePath%>css/common.css" rel="stylesheet" type="text/css">
+
 <div>
     <div class="resume-modify">
         <div class="input-group input-group-lg col-lg-4">
@@ -23,4 +24,6 @@
 </div>
 <ul class="box"></ul>
 
+<jsp:include page="modify.jsp"/>
+<script type="text/javascript" src="<%=basePath%>js/jquery.searchableSelect.js"></script>
 <script src="<%=basePath%>js/modifyResume.js"></script>
