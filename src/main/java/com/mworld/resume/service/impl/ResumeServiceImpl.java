@@ -97,4 +97,9 @@ public class ResumeServiceImpl implements ResumeService {
     public Integer findUploadResumesCnt(String uploaderId, String keyword) {
         return resumeDao.findUploadResumesCnt(uploaderId, keyword);
     }
+
+    @Override
+    public List<ResumeMapVo> findResFiles(String[] resIds) {
+        return resumeDao.findResFiles(resIds);
+    }
 }

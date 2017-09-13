@@ -1,14 +1,11 @@
 package com.mworld.resume.controller;
 
-import com.mworld.common.BaseController;
-import com.mworld.common.NoticeConst;
+import com.mworld.common.*;
 import com.mworld.common.exception.NotLoginException;
 import com.mworld.resume.po.Gender;
 import com.mworld.resume.po.Privilege;
 import com.mworld.resume.po.Resume;
 import com.mworld.resume.service.ResumeService;
-import com.mworld.common.Message;
-import com.mworld.common.ResponseVo;
 import com.mworld.resume.vo.ResumeMapVo;
 import com.mworld.resume.vo.ResumeRequestVo;
 import org.apache.commons.fileupload.FileItem;
@@ -39,6 +36,9 @@ public class ResumeController extends BaseController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private ResumeService resumeService;
+
+    @Autowired
+    private Config config;
 
     @RequestMapping(value = "uploadResume", method = {RequestMethod.POST, RequestMethod.GET})
     public void upload(HttpServletRequest request, HttpServletResponse response) {
@@ -117,7 +117,7 @@ public class ResumeController extends BaseController {
 
             List<ResumeMapVo> list = resumeService.findResumeDetail(options, start, size);
             if (!CollectionUtils.isEmpty(list)) {
-                
+
                 responseMsg(response, new Message(new ResponseVo<>(list, t), true, NoticeConst.GET_DATA_NOTICE));
                 return;
             }
@@ -178,7 +178,7 @@ public class ResumeController extends BaseController {
         File file = new File("D:/test.swf");
         logger.info(file.getCanonicalPath());
         logger.info(file.getAbsolutePath());
-        
+
         responseMsg(response, new Message<>(true, file.getCanonicalPath()));
     }
 
@@ -207,7 +207,7 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        
+
         responseMsg(response, new Message(new ResponseVo<>(list, cnt), true, NoticeConst.GET_DATA_NOTICE));
     }
 
@@ -224,7 +224,7 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        
+
         responseMsg(response, new Message(resume, true, NoticeConst.GET_DATA_NOTICE));
     }
 
@@ -283,9 +283,9 @@ public class ResumeController extends BaseController {
                     dptId = StringUtils.isEmpty(item.getString()) ? null : NumberUtils.toInt(item.getString());
                 } else if ("education".equals(item.getFieldName())) {
                     education = StringUtils.isEmpty(item.getString()) ? null : new String(item.getString().getBytes("ISO-8859-1"), "UTF-8");
-                } else if ("gender".equals(item.getFieldName())){
+                } else if ("gender".equals(item.getFieldName())) {
                     gender = StringUtils.isEmpty(item.getString()) ? null : Gender.valueOf(new String(item.getString().getBytes("ISO-8859-1"), "UTF-8"));
-                } else if ("privilege".equals(item.getFieldName())){
+                } else if ("privilege".equals(item.getFieldName())) {
                     privilege = StringUtils.isEmpty(item.getString()) ? null : Privilege.valueOf(new String(item.getString().getBytes("ISO-8859-1"), "UTF-8"));
                 }
             }
@@ -295,13 +295,14 @@ public class ResumeController extends BaseController {
                 return;
             }
 
-            String tmpFileDir = getTempFilePath("resumeCob" + File.separator + getLoginUser(request).getId());
+            Calendar calendar = Calendar.getInstance();
+            String tmpFileDir = getTempFilePath("resumeCob" + File.separator + getLoginUser(request).getId()) + File.separator + (calendar.get(Calendar.YEAR)) + (calendar.get(Calendar.MONTH) + 1);
             File tmpFile = new File(tmpFileDir);
             if (!tmpFile.exists()) {
                 tmpFile.mkdirs();
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
-            String destName = getLoginUser(request).getId() +"_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
+            String destName = getLoginUser(request).getId() + "_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
             ResumeRequestVo requestVo = new ResumeRequestVo();
@@ -328,19 +329,37 @@ public class ResumeController extends BaseController {
     }
 
     @RequestMapping(value = "owenRes/{start}/{size}", method = RequestMethod.POST)
-    public void ModifyResumeList(HttpServletRequest request, HttpServletResponse response, @PathVariable("start") Integer start, @PathVariable("size") Integer size) throws NotLoginException{
+    public void ModifyResumeList(HttpServletRequest request, HttpServletResponse response, @PathVariable("start") Integer start, @PathVariable("size") Integer size) throws NotLoginException {
         String keyword = request.getParameter("keyword");
         Integer cnt = resumeService.findUploadResumesCnt(getLoginUser(request).getId(), keyword);
-        if (cnt == null || cnt <= 0){
+        if (cnt == null || cnt <= 0) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
         List<ResumeMapVo> resumeMapVos = resumeService.findUploadResumes(getLoginUser(request).getId(), keyword, start, size);
-        responseMsg(response, new Message(new ResponseVo<>(resumeMapVos, cnt), true, NoticeConst.GET_DATA_NOTICE ));
+        responseMsg(response, new Message(new ResponseVo<>(resumeMapVos, cnt), true, NoticeConst.GET_DATA_NOTICE));
     }
 
-    public void batchDown(HttpServletRequest request, HttpServletResponse response){
-        
+    public void batchDown(HttpServletRequest request, HttpServletResponse response) {
+        String[] ids = StringUtils.isEmpty(request.getParameter("resumeIds")) ? request.getParameter("resumeIds").split(",") : null;
+        if (ids == null) {
+            responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+            return;
+        }
+        List<ResumeMapVo> list = resumeService.findResFiles(ids);
+        if (CollectionUtils.isEmpty(list)){
+            responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
+            return;
+        }
+        for (ResumeMapVo vo : list){
+            if (StringUtils.isEmpty(vo.getDestName()))
+                continue;
+            File file = new File(config.FILES_COB + File.separator + vo.getDptName());
+            if (!file.exists())
+                continue;
+            
+        }
+
     }
 }
 

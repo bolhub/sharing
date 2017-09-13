@@ -32,4 +32,6 @@ public interface ResumeDao {
 
     public Integer findUploadResumesCnt(@Param("uploaderId") String uploaderId, @Param("keyword") String keyword);
 
+    public List<ResumeMapVo> findResFiles(@Param("resIds") String[] resIds);
+
 }

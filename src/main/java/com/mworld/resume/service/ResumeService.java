@@ -35,4 +35,6 @@ public interface ResumeService {
     public List<ResumeMapVo> findUploadResumes(String uploaderId, String keyword, Integer start, Integer size);
 
     public Integer findUploadResumesCnt(String uploaderId, String keyword);
+
+    public List<ResumeMapVo> findResFiles(String[] resIds);
 }

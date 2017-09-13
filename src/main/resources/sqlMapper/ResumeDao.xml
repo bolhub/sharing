@@ -312,5 +312,17 @@
         </if>
     </select>
 
+    <select id="findResFiles" resultType="com.mworld.resume.vo.ResumeMapVo">
+        SELECT
+        r.dest_name `destName`,
+        r.file_path `filePath`,
+        r.owner
+        FROM resume r
+        WHERE id IN (
+        <foreach collection="resIds" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
 
 </mapper>
