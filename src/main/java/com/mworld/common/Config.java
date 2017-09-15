@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component;
 public class Config {
     @Value("${uploadDiskDir}")
     public String FILES_COB;
+
+    @Value("${tmpZipDir}")
+    public String TMP_ZIP_DIR;
 }

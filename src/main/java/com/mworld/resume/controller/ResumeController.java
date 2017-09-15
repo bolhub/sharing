@@ -14,6 +14,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.tools.ant.taskdefs.Ant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("/resume")
@@ -340,7 +343,7 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(new ResponseVo<>(resumeMapVos, cnt), true, NoticeConst.GET_DATA_NOTICE));
     }
 
-    public void batchDown(HttpServletRequest request, HttpServletResponse response) {
+    public void batchDown(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String[] ids = StringUtils.isEmpty(request.getParameter("resumeIds")) ? request.getParameter("resumeIds").split(",") : null;
         if (ids == null) {
             responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
@@ -351,14 +354,24 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
+        byte[] bt = new byte[1024];
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(config.TMP_ZIP_DIR));
         for (ResumeMapVo vo : list){
             if (StringUtils.isEmpty(vo.getDestName()))
                 continue;
             File file = new File(config.FILES_COB + File.separator + vo.getDptName());
             if (!file.exists())
                 continue;
-            
+            FileInputStream fis = new FileInputStream(file);
+            out.putNextEntry(new ZipEntry(file.getName()));
+            int len;
+            while ((len = fis.read(bt)) > 0){
+                out.write(bt, 0, len);
+            }
+            out.closeEntry();
+            fis.close();
         }
+        out.close();
 
     }
 }
