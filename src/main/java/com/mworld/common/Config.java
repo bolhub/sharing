@@ -10,4 +10,14 @@ public class Config {
 
     @Value("${tmpZipDir}")
     public String TMP_ZIP_DIR;
+
+    @Value("${SWFPath}")
+    public String SWF_FILE_PATH;
+
+    @Value("${openOfficePort}")
+    public Integer OPEN_OFFICE_PORT;
+
+    @Value("${environment}")
+    public Integer ENVIRONMENT;
+
 }

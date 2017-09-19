@@ -170,17 +170,16 @@ public class ResumeController extends BaseController {
 //    }
     @RequestMapping(value = "/previewDoc", method = RequestMethod.GET)
     public void previewDoc(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        String output = this.getClass().getClassLoader().getResource("/").getPath().replace("WEB-INF/classes/", "js/swf");
-        String output = "/D:/SWF";
-        logger.info("-------------------" + Thread.currentThread().getContextClassLoader().getResource(""));
-//        DocConverter docConverter = new DocConverter("D:/随书附带说明.doc");
-//        docConverter.setOutPath(output);
-//        docConverter.convert();
-//        if (docConverter.convert())
-//            responseMsg(response, new Message<>(true, "js/swf/test2.swf"));
+        String resumeId = request.getParameter("resId");
+        if (StringUtils.isEmpty(resumeId)){
+            responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
+            return;
+        }
+        Resume destResume = resumeService.findResumeById(resumeId);
+        if (destResume == null || StringUtils.isEmpty(destResume.getDestName())){
+           
+        }
         File file = new File("D:/test.swf");
-        logger.info(file.getCanonicalPath());
-        logger.info(file.getAbsolutePath());
 
         responseMsg(response, new Message<>(true, file.getCanonicalPath()));
     }

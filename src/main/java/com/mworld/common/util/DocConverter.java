@@ -5,8 +5,10 @@ import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeException;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import com.mworld.common.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -14,9 +16,6 @@ import java.net.ConnectException;
 
 public class DocConverter {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final int environment = 1;//1->windows,2->linux
-    private static final int DEFAULT_PORT = 8100;
-    private static final String DEFAULT_SWFTOOLPATH = "D:/SWFTools/";
     private int port;
     private String swfToolsPath;
     private String docPath;
@@ -25,6 +24,8 @@ public class DocConverter {
     private File docFile;
     private File pdfFile;
     private File swfFile;
+    @Autowired
+    private Config config;
 
     public DocConverter(String docPath) {
         init(docPath);
@@ -32,8 +33,8 @@ public class DocConverter {
 
     public void init(String docPath) {
         this.docPath = docPath;
-        port = DEFAULT_PORT;
-        swfToolsPath = DEFAULT_SWFTOOLPATH;
+        port = config.OPEN_OFFICE_PORT;
+        swfToolsPath = config.SWF_FILE_PATH;
         fileName = docPath.replaceAll("\\\\", "/").substring(docPath.lastIndexOf("/"), docPath.lastIndexOf("."));
         docFile = new File(docPath);
         pdfFile = new File(fileName + ".pdf");
@@ -49,7 +50,6 @@ public class DocConverter {
     }
 
     /**
-     *
      * @param swfToolsPath SWFTOOLS工具的安装目录
      */
     public void setSwfToolsPath(String swfToolsPath) {
@@ -86,13 +86,13 @@ public class DocConverter {
         Runtime r = Runtime.getRuntime();
         if (pdfFile.exists()) {
             String command = "";
-            if (environment == 1) {
+            if (config.ENVIRONMENT == 1) {
                 if (swfToolsPath.charAt(swfToolsPath.length() - 1) == '/')
                     command = swfToolsPath + "pdf2swf.exe ";
                 else
                     command = swfToolsPath + "/pdf2swf.exe ";
             }
-            if (environment == 2)
+            if (config.ENVIRONMENT == 2)
                 command = "pdf2swf ";
             try {
                 Process process = r.exec(command + pdfFile.getPath() + " -o" + swfFile.getPath() + " -T 9");
