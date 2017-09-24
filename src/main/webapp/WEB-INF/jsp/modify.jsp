@@ -64,6 +64,21 @@
                         <div class="col-lg-5 update-tar" hidden><input type="text" class="form-control"><span
                                 class="glyphicon glyphicon-remove pull-right"></span></div>
                     </div>
+                    <%--<div class="form-group"><label class="control-label col-lg-3">姓别</label>--%>
+                        <%--<div class="col-lg-5 prev-tar">--%>
+                            <%--<input type="text" class="form-control">--%>
+                            <%--<span class="glyphicon glyphicon-pencil pull-right"></span>--%>
+                        <%--</div>--%>
+                        <%--<div class="col-lg-5 update-tar" hidden>--%>
+                            <%--<div class="radio" readonly>--%>
+                                <%--<label><input type="radio" name="major" value="MALE">男</label>--%>
+                            <%--</div>--%>
+                            <%--<div class="radio">--%>
+                                <%--<label><input type="radio" name="major" value="FEMALE">女</label>--%>
+                            <%--</div>--%>
+                            <%--<span class="glyphicon glyphicon-remove pull-right"></span>--%>
+                        <%--</div>--%>
+                    <%--</div>--%>
                     <div class="form-group"><label class="control-label col-lg-3">学历</label>
                         <div class="col-lg-5 prev-tar">
                             <input type="text" class="form-control">

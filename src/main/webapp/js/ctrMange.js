@@ -40,44 +40,43 @@ var ctrFn = {
                     if (optionCtr) {
                         options.ajax.checkData.ctrId = ctrFn.opt.ctrId;
                     }
-                    util.post({
-                        url: options.ajax.url,
-                        async: false,
-                        data: options.ajax.checkData,
-                        success: options.ajax.success ? options.ajax.success : function (data) {
+                    $.post(options.ajax.url, options.ajax.checkData)
+                        .then(function (data) {
                             var result = data ? JSON.parse(data) : null;
                             if (result && !result.valid) {
                                 tip.mod.find(".help-block").text("已添加，不可使用");
                                 return;
                             }
                             tip.mod.find(".help-block").text("可以使用");
-                            tip.mod.find(".commit-btn").unbind().one("click", function () {
-                                var saveData = {
-                                    saveName: tip.mod.find("[name='checkName']").val(),
-                                    ctrId: ctrFn.opt.ctrId
-                                };
+                        }, function () {
+                            tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+                        }).done(function () {
+                        tip.mod.find(".commit-btn").unbind().one("click", function () {
+                            var saveData = {
+                                saveName: tip.mod.find("[name='checkName']").val(),
+                                ctrId: ctrFn.opt.ctrId
+                            };
 
-                                util.post({
-                                    url: options.ajax.saveUrl,
-                                    data: saveData,
-                                    success: function (result) {
-                                        var data = JSON.parse(result)
-                                        if (data && data.success == true) {
-                                            tip.tipBox({text: tip.mod.find("[name = 'checkName']").val() + "添加成功"}, true);
-                                            tip.mod.modal('hide');
-                                        } else {
-                                            tip.tipBox({
-                                                type: 'warn',
-                                                text: tip.mod.find("[name = 'checkName']").val() + "添加失败"
-                                            }, true);
-                                            tip.mod.modal('hide');
-                                        }
+                            util.post({
+                                url: options.ajax.saveUrl,
+                                data: saveData,
+                                success: function (result) {
+                                    var data = JSON.parse(result)
+                                    if (data && data.success == true) {
+                                        tip.tipBox({text: tip.mod.find("[name = 'checkName']").val() + "添加成功"}, true);
+                                        tip.mod.modal('hide');
+                                    } else {
+                                        tip.tipBox({
+                                            type: 'warn',
+                                            text: tip.mod.find("[name = 'checkName']").val() + "添加失败"
+                                        }, true);
+                                        tip.mod.modal('hide');
                                     }
-                                }, function () {
-                                    tip.mod.modal('hide');
-                                })
+                                }
+                            }, function () {
+                                tip.mod.modal('hide');
                             })
-                        }
+                        })
                     })
                 })
             })
@@ -137,93 +136,234 @@ var ctrFn = {
         ctrFn.resArray = [];
         $(".res-box").html('');
     },
-    initCtrList: function (start, size) {
-        util.post({
-            url: ctrFn.url.dptList,
-            data: {
-                keyword: ctrFn.opt.searchType && ctrFn.opt.searchType == "中心" ? $("#search input").val() : null,
-                start: start ? start : 1,
-                size: size ? size : 9
-            },
-            success: function (data) {
-                var result = JSON.parse(data);
-                $("#ctr-center .panel-body").html("");
-                if (result.success) {
-                    var list = result.target.data;
-                    ctrFn.ctrPage.cnt = result.target.counts;
-                    for (var i = 0; i < list.length; i++) {
-                        $("#ctr-center .panel-body").append('<div class="roadmap-item" ctrId="' + list[i].id + '" ctrName="' + list[i].dptName + '">\n' +
-                            '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
-                            // '            <span class="glyphicon glyphicon-minus pull-right"></span>\n' +
-                            '            <span class="roadmap-title">' + list[i].dptName + '</span>\n' +
-                            '        </div>');
-                    }
-                    if (ctrFn.opt.ctrId) {
-                        $("#ctr-center .roadmap-item[ctrId='" + ctrFn.opt.ctrId + "']").addClass("active");
-                    }
-                    while (ctrFn.ctrPage.flag) {
-                        ctrFn.pageTool({box: $(".ctr-box"), totalCounts: ctrFn.ctrPage.cnt}, function () {
-                            ctrFn.initCtrList(ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
-                            $("#ctr-center").find(".panel-heading").find("strong").find(".badge").text(ctrFn.tmpPage.currentPage + "/" + ctrFn.tmpPage.totalPages);
-                        })
-                        ctrFn.ctrPage.flag = false;
-                    }
-
-                    $("#ctr-center .glyphicon-edit").unbind().bind("click", function () {
-                        event.stopPropagation();
-                        var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("ctrId");
-                        // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
-                        tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
-                            tip.mod.find("#sure-btn").unbind().one("click", function () {
-                                var changeName = tip.mod.find("[name='changeName']").val();
-                                if (changeName) {
-                                    $.ajax({
-                                        url: ctrFn.url.ctrRename,
-                                        type: 'post',
-                                        data: {ctrId: ctrId, newName: changeName},
-                                        success: function (data) {
-                                            var result = data ? JSON.parse(data) : null;
-                                            if (result && result.success) {
-                                                tip.tipBox({text: "修改成功，请刷新后查看"}, true);
-                                                tip.mod.modal('hide');
-                                            } else {
-                                                tip.tipBox({type: "warn", text: "修改失败"}, true);
-                                                tip.mod.modal('hide');
-                                            }
-
-                                        },
-                                        error: function () {
-                                            tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
-                                            tip.mod.modal('hide');
-                                        }
-                                    })
+    fillData: function (data) {
+        var result = JSON.parse(data);
+        $("#ctr-center .panel-body").html("");
+        if (result.success) {
+            var list = result.target.data;
+            ctrFn.ctrPage.cnt = result.target.counts;
+            for (var i = 0; i < list.length; i++) {
+                $("#ctr-center .panel-body").append('<div class="roadmap-item" ctrId="' + list[i].id + '" ctrName="' + list[i].dptName + '">\n' +
+                    '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
+                    // '            <span class="glyphicon glyphicon-minus pull-right"></span>\n' +
+                    '            <span class="roadmap-title">' + list[i].dptName + '</span>\n' +
+                    '        </div>');
+            }
+            if (ctrFn.opt.ctrId) {
+                $("#ctr-center .roadmap-item[ctrId='" + ctrFn.opt.ctrId + "']").addClass("active");
+            }
+            while (ctrFn.ctrPage.flag) {
+                ctrFn.pageTool({box: $(".ctr-box"), totalCounts: ctrFn.ctrPage.cnt}, function () {
+                    ctrFn.initCtrList(ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
+                    $("#ctr-center").find(".panel-heading").find("strong").find(".badge").text(ctrFn.tmpPage.currentPage + "/" + ctrFn.tmpPage.totalPages);
+                })
+                ctrFn.ctrPage.flag = false;
+            }
+        }
+    },
+    changeName: function () {
+        $("#ctr-center .glyphicon-edit").unbind().bind("click", function () {
+            event.stopPropagation();
+            var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("ctrId");
+            // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
+            tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
+                tip.mod.find("#sure-btn").unbind().one("click", function () {
+                    var changeName = tip.mod.find("[name='changeName']").val();
+                    if (changeName) {
+                        $.ajax({
+                            url: ctrFn.url.ctrRename,
+                            type: 'post',
+                            data: {ctrId: ctrId, newName: changeName},
+                            success: function (data) {
+                                var result = data ? JSON.parse(data) : null;
+                                if (result && result.success) {
+                                    tip.tipBox({text: "修改成功，请刷新后查看"}, true);
+                                    tip.mod.modal('hide');
+                                } else {
+                                    tip.tipBox({type: "warn", text: "修改失败"}, true);
+                                    tip.mod.modal('hide');
                                 }
-                            });
+
+                            },
+                            error: function () {
+                                tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
+                                tip.mod.modal('hide');
+                            }
                         })
+                    }
+                });
+            })
 
-                    })
-
-                    $("#ctr-center .roadmap-item").unbind().bind("click", function () {
-                        if (!$(this).hasClass("active")) {
-                            $(this).addClass("active").siblings(".roadmap-item").removeClass("active");
-                            $("#pro-center .process,#worker-center .process:eq(0)").text(">>" + $(this).attr("ctrName"));
-                            $("#worker-center .process:eq(1)").text("");
-                            $("#pro-center .panel-body").html("请选择中心");
-                            $("#worker-center .panel-body").text("未选择项目");
-                            $("#pro-center .pro-box, #worker-center .res-box").html("");
-                            $("#pro-center, #worker-center").find(".panel-heading").find("strong").find(".badge").text("0/0");
-                            ctrFn.proPage.flag = true;
-                            ctrFn.resPage.flag = true;
-                            ctrFn.findPrt($(this).attr("ctrId"));
-                            ctrFn.opt.ctrId = $(this).attr("ctrId");
-                        }
-                    })
-                } else {
-                    $("#ctr-center .panel-body").text("未查询到数据");
-                }
+        })
+    },
+    tabTag: function () {
+        $("#ctr-center .roadmap-item").unbind().bind("click", function () {
+            if (!$(this).hasClass("active")) {
+                $(this).addClass("active").siblings(".roadmap-item").removeClass("active");
+                $("#pro-center .process,#worker-center .process:eq(0)").text(">>" + $(this).attr("ctrName"));
+                $("#worker-center .process:eq(1)").text("");
+                $("#pro-center .panel-body").html("请选择中心");
+                $("#worker-center .panel-body").text("未选择项目");
+                $("#pro-center .pro-box, #worker-center .res-box").html("");
+                $("#pro-center, #worker-center").find(".panel-heading").find("strong").find(".badge").text("0/0");
+                ctrFn.proPage.flag = true;
+                ctrFn.resPage.flag = true;
+                ctrFn.findPrt($(this).attr("ctrId"));
+                ctrFn.opt.ctrId = $(this).attr("ctrId");
             }
         })
     },
+    initCtrList: function (start, size) {
+        $.post(ctrFn.url.dptList,{
+            keyword: ctrFn.opt.searchType && ctrFn.opt.searchType == "中心" ? $("#search input").val() : null,
+            start: start ? start : 1,
+            size: size ? size : 9
+        }).then(function (data) {
+            ctrFn.fillData(data);
+        }, function () {
+            tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+        }).done(function () {
+            ctrFn.changeName();
+            ctrFn.tabTag();
+        })
+    },
+    prtList: function (data) {
+        var result = JSON.parse(data);
+        $("#pro-center .panel-body").html("");
+        if (result.success) {
+            var list = result.target.data;
+            ctrFn.proPage.cnt = result.target.counts;
+            for (var i = 0; i < list.length; i++) {
+                $("#pro-center .panel-body").append('<div class="roadmap-item" pCtrId="' + id + '" iProId="' + list[i].id + '" iProName="' + list[i].proName + '">\n' +
+                    '            <span class="roadmap-ico"><span class="glyphicon glyphicon-edit pull-right"></span></span>\n' +
+                    '            <span class="roadmap-title">' + list[i].proName + '</span>\n' +
+                    '        </div>')
+            }
+            if (ctrFn.opt.proId) {
+                $("#pro-center .roadmap-item[iProId='" + ctrFn.opt.proId + "']").addClass("active");
+            }
+
+            while (ctrFn.proPage.flag) {
+                ctrFn.pageTool({box: $(".pro-box"), totalCounts: ctrFn.proPage.cnt}, function () {
+                    ctrFn.findPrt(id, ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
+                    $("#pro-center").find(".panel-heading").find("strong").find(".badge").text(ctrFn.tmpPage.currentPage + "/" + ctrFn.tmpPage.totalPages);
+                });
+
+                ctrFn.proPage.flag = false;
+            }
+            $("#pro-center .glyphicon-edit").unbind().bind("click", function () {
+                event.stopPropagation();
+                var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("pCtrId");
+                var proId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("iProId");
+                // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
+                tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
+                    tip.mod.find("#sure-btn").unbind().one("click", function () {
+                        var changeName = tip.mod.find("[name='changeName']").val();
+                        if (changeName) {
+                            $.ajax({
+                                url: ctrFn.url.proRename,
+                                type: 'post',
+                                data: {ctrId: ctrId, proId: proId, newName: changeName},
+                                success: function (data) {
+                                    var result = data ? JSON.parse(data) : null;
+                                    if (result && result.success) {
+                                        tip.tipBox({text: "修改成功，请刷新后查看"}, true);
+                                        tip.mod.modal('hide');
+                                    } else {
+                                        tip.tipBox({type: "warn", text: "修改失败"}, true);
+                                        tip.mod.modal('hide');
+                                    }
+
+                                },
+                                error: function () {
+                                    tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
+                                    tip.mod.modal('hide');
+                                }
+                            })
+                        }
+                    });
+                })
+
+            })
+
+            $("#pro-center .roadmap-item").unbind().bind("click", function () {
+                $(this).addClass("active").siblings(".roadmap-item").removeClass("active");
+                $("#worker-center .process:eq(1)").text(">>" + $(this).attr("iProName"));
+                $("#worker-center .panel-body").html("请选择项目");
+                $("#worker-center .res-box").html("");
+                $("#worker-center").find(".panel-heading").find("strong").find(".badge").text("0/0");
+                ctrFn.resPage.flag = true;
+                ctrFn.findWorker($(this).attr("pCtrId"), $(this).attr("iProId"));
+                ctrFn.opt.proId = $(this).attr("iProId");
+            });
+        } else {
+            $("#pro-center .panel-body").text("未查询到数据");
+        }
+    },
+    editBtn: function(){
+        $("#pro-center .glyphicon-edit").unbind().bind("click", function () {
+            event.stopPropagation();
+            var ctrId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("pCtrId");
+            var proId = $(this).parent("span.roadmap-ico").parent(".roadmap-item").attr("iProId");
+            // tip.tipMod({text: '你确定要删除'+$(this).parent(".roadmap-ico").parent(".roadmap-item").attr("ctrName")+"吗？" });
+            tip.tipMod({text: '<div class="input-group"><span class="input-group-addon">更新名称</span><input name="changeName" type="text" class="form-control"/></div>'}, function () {
+                tip.mod.find("#sure-btn").unbind().one("click", function () {
+                    var changeName = tip.mod.find("[name='changeName']").val();
+                    if (changeName) {
+                        $.ajax({
+                            url: ctrFn.url.proRename,
+                            type: 'post',
+                            data: {ctrId: ctrId, proId: proId, newName: changeName},
+                            success: function (data) {
+                                var result = data ? JSON.parse(data) : null;
+                                if (result && result.success) {
+                                    tip.tipBox({text: "修改成功，请刷新后查看"}, true);
+                                    tip.mod.modal('hide');
+                                } else {
+                                    tip.tipBox({type: "warn", text: "修改失败"}, true);
+                                    tip.mod.modal('hide');
+                                }
+
+                            },
+                            error: function () {
+                                tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
+                                tip.mod.modal('hide');
+                            }
+                        })
+                    }
+                });
+            })
+
+        })
+    },
+    contextTab: function(){
+        $("#pro-center .roadmap-item").unbind().bind("click", function () {
+            $(this).addClass("active").siblings(".roadmap-item").removeClass("active");
+            $("#worker-center .process:eq(1)").text(">>" + $(this).attr("iProName"));
+            $("#worker-center .panel-body").html("请选择项目");
+            $("#worker-center .res-box").html("");
+            $("#worker-center").find(".panel-heading").find("strong").find(".badge").text("0/0");
+            ctrFn.resPage.flag = true;
+            ctrFn.findWorker($(this).attr("pCtrId"), $(this).attr("iProId"));
+            ctrFn.opt.proId = $(this).attr("iProId");
+        });
+    },
+    /*findPrt: function (id, start, size) {
+        $.post( ctrFn.url.proList,
+           {
+                ctrId: id,
+                keyword: ctrFn.opt.searchType && ctrFn.opt.searchType == "项目" ? $("#search input").val() : null,
+                start: start ? start : 1,
+                size: size ? size : 9
+            }).then(function (data) {
+            ctrFn.prtList(data);
+        }, function () {
+            tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+        }).done(function () {
+            ctrFn.editBtn();
+            ctrFn.contextTab();
+        })
+    },*/
     findPrt: function (id, start, size) {
         util.post({
             url: ctrFn.url.proList,
