@@ -177,7 +177,7 @@ public class ResumeController extends BaseController {
         }
         Resume destResume = resumeService.findResumeById(resumeId);
         if (destResume == null || StringUtils.isEmpty(destResume.getDestName())){
-           
+
         }
         File file = new File("D:/test.swf");
 
