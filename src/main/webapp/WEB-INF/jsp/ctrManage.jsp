@@ -182,16 +182,16 @@
         .roadmap-item{
             position: relative;
         }
-        .roadmap-item .glyphicon-edit {
+        .roadmap-item .glyphicon {
             display: none;
             font-size: xx-small;
         }
 
-        .roadmap-item .glyphicon-edit:hover {
+        .roadmap-item .glyphicon:hover {
             color: #995048;
         }
 
-        .roadmap-item:hover .glyphicon-edit {
+        .roadmap-item:hover .glyphicon {
             display: inline-block;
             animation: del-action 0.5s;
         }
@@ -349,8 +349,5 @@
 <jsp:include page="./modify.jsp"></jsp:include>
 </body>
 <script type="text/javascript" src="<%=basePath%>js/jqPaginator.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/flexpaper_flash_debug.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/swfobject.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/ctrMange.js"></script>
 </html>

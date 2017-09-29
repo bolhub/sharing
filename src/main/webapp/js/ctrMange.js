@@ -240,6 +240,7 @@ var ctrFn = {
             });
         })
     },
+    //项目数据列表
     prtGet: function (data, id) {
         var result = JSON.parse(data);
         $("#pro-center .panel-body").html("");
@@ -308,6 +309,7 @@ var ctrFn = {
             ctrFn.proTabFn();
         })
     },
+    //简历数据列表
     wrkGet: function (data, ctrId, proId) {
         var result = JSON.parse(data);
         $("#worker-center .panel-body").html('');
@@ -352,7 +354,7 @@ var ctrFn = {
             }
         }
     },
-    //所有开发中心信息下拉框
+    //开发中心下拉框
     dptTtGet: function (data, info, cFlag) {
         var result = data ? JSON.parse(data).target : null;
         if (!result || result.target)
@@ -367,6 +369,7 @@ var ctrFn = {
             cFlag = false;
         }
     },
+    //修改取消按钮操作
     wrkMdBtnFn: function () {
         tip.mod.find(".glyphicon-pencil").unbind().bind("click", function () {
             $(this).parent(".col-lg-5").attr("hidden", true).next(".col-lg-5").removeAttr("hidden").children("input").focus();
@@ -375,6 +378,7 @@ var ctrFn = {
             $(this).parent(".col-lg-5").attr("hidden", true).prev(".col-lg-5").removeAttr("hidden").children("input").focus();
         });
     },
+    //简历修改数据操作
     wrkUpFn: function (workerId) {
         tip.mod.find(".btn-primary").unbind().one("click", function () {
             var tag = $(".update-tar");
@@ -515,6 +519,7 @@ var ctrFn = {
             return false;
         return true;
     },
+    //搜索框操作
     searchByKeyword: function () {
         switch (ctrFn.opt.searchType) {
             case "中心":
@@ -537,94 +542,103 @@ var ctrFn = {
                 break;
         }
     },
-    addWorker: function (start, size) {
-        tip.tipMod({mod: 'wkAddMod',}, function () {
-            tip.mod.find(".worker-list").html('<span class="loading"></span>');
+    //添加人员列表
+    wrkAcGet: function (data) {
+        var result = JSON.parse(data);
+        if (result && result.success) {
+            tip.mod.find(".worker-list").html("");
+            ctrFn.resPage.cellCnt = result.target.counts;
+            for (var i = 0; i < result.target.data.length; i++) {
+                tip.mod.find(".worker-list").append('<div class="worker-list-item" wkId="' + result.target.data[i].id + '">\n' +
+                    '                        <p><span class="glyphicon glyphicon-user" title="姓名"></span><span>' + result.target.data[i].owner + '</span></p>\n' +
+                    '                        <p><span class="glyphicon glyphicon-magnet" title="学历"></span><span>' + result.target.data[i].education + '</span></p>\n' +
+                    '                        <p><span class="glyphicon glyphicon-tower" title="专业"></span><span title="' + result.target.data[i].major + '">' + result.target.data[i].major + '</span></p>\n' +
+                    '                        <p><span class="glyphicon glyphicon-time" title="毕业时间"></span><span>' + util.formatDate(result.target.data[i].graduateTime, true) + '</span></p>\n' +
+                    '                        <p><span class="glyphicon glyphicon-home" title="归属地"></span><span title="' + result.target.data[i].dptName + '">' + result.target.data[i].dptName + '</span></p>\n' +
+                    '                    </div>')
+            }
+
+            if (ctrFn.resArray && ctrFn.resArray.length > 0) {
+                for (var j = 0; j < ctrFn.resArray.length; j++) {
+                    $(".worker-list").find("[wkId='" + ctrFn.resArray[j] + "']").addClass("select");
+                }
+            }
+            while (ctrFn.resPage.cellFlag) {
+                ctrFn.pageTool({
+                    box: $(".worker-page-box"),
+                    totalCounts: ctrFn.resPage.cellCnt,
+                    first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+                    next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+                    last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+                    pageSize: 16,
+                    visiblePages: 3
+                }, function () {
+                    ctrFn.addWorker(ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
+                })
+                ctrFn.resPage.cellFlag = false;
+            }
+
+        } else {
+            $(".worker-page-box").html("");
+            tip.tipMod({mod: 'wkAddMod',}, function () {
+                tip.mod.find(".worker-list").html('<span>未查询到数据 </span>');
+            })
+        }
+    },
+    //人员列表选择操作
+    wrkSecFn: function () {
+        $(".worker-list-item").unbind().bind("click", function () {
+            if ($(this).hasClass("select")) {
+                $(this).removeClass("select");
+                ctrFn.resArray.splice(ctrFn.resArray.indexOf($(this).attr("wkId")), 1);
+            } else {
+                $(this).addClass("select");
+                ctrFn.resArray.push($(this).attr("wkId"))
+            }
+        });
+    },
+    //为项目添加人员
+    wrkAddFn: function () {
+        $("#wkAddMod .modal-footer button:eq(1)").unbind().bind("click", function () {
             util.post({
-                url: ctrFn.url.getResumes,
+                url: ctrFn.url.resumeAdd,
                 data: {
-                    keyword: $("#wkAddMod").find(".keyword-input").val(),
                     ctrId: ctrFn.opt.ctrId,
                     proId: ctrFn.opt.proId,
-                    start: start ? start : 1,
-                    size: size ? size : 16
+                    workers: ctrFn.resArray.toString()
                 },
                 success: function (data) {
                     var result = JSON.parse(data);
                     if (result && result.success) {
-                        tip.mod.find(".worker-list").html("");
-                        ctrFn.resPage.cellCnt = result.target.counts;
-                        for (var i = 0; i < result.target.data.length; i++) {
-                            tip.mod.find(".worker-list").append('<div class="worker-list-item" wkId="' + result.target.data[i].id + '">\n' +
-                                '                        <p><span class="glyphicon glyphicon-user" title="姓名"></span><span>' + result.target.data[i].owner + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-magnet" title="学历"></span><span>' + result.target.data[i].education + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-tower" title="专业"></span><span title="' + result.target.data[i].major + '">' + result.target.data[i].major + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-time" title="毕业时间"></span><span>' + util.formatDate(result.target.data[i].graduateTime, true) + '</span></p>\n' +
-                                '                        <p><span class="glyphicon glyphicon-home" title="归属地"></span><span title="' + result.target.data[i].dptName + '">' + result.target.data[i].dptName + '</span></p>\n' +
-                                '                    </div>')
-                        }
-
-                        if (ctrFn.resArray && ctrFn.resArray.length > 0) {
-                            for (var j = 0; j < ctrFn.resArray.length; j++) {
-                                $(".worker-list").find("[wkId='" + ctrFn.resArray[j] + "']").addClass("select");
-                            }
-                        }
-                        while (ctrFn.resPage.cellFlag) {
-                            ctrFn.pageTool({
-                                box: $(".worker-page-box"),
-                                totalCounts: ctrFn.resPage.cellCnt,
-                                first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
-                                prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
-                                next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
-                                last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
-                                pageSize: 16,
-                                visiblePages: 3
-                            }, function () {
-                                ctrFn.addWorker(ctrFn.tmpPage.currentPage, ctrFn.tmpPage.pageSize);
-                            })
-                            ctrFn.resPage.cellFlag = false;
-                        }
-
+                        tip.tipBox({text: "添加成功，请刷新后查看"}, true);
+                        tip.mod.modal('hide');
                     } else {
-                        $(".worker-page-box").html("");
-                        tip.tipMod({mod: 'wkAddMod',}, function () {
-                            tip.mod.find(".worker-list").html('<span>未查询到数据 </span>');
-                        })
+                        tip.tipBox({text: "添加失败"}, true);
+                        tip.mod.modal('hide');
                     }
-                    $(".worker-list-item").unbind().bind("click", function () {
-                        if ($(this).hasClass("select")) {
-                            $(this).removeClass("select");
-                            ctrFn.resArray.splice(ctrFn.resArray.indexOf($(this).attr("wkId")), 1);
-                        } else {
-                            $(this).addClass("select");
-                            ctrFn.resArray.push($(this).attr("wkId"))
-                        }
-                    });
-                    $("#wkAddMod .modal-footer button:eq(1)").unbind().bind("click", function () {
-                        util.post({
-                            url: ctrFn.url.resumeAdd,
-                            data: {
-                                ctrId: ctrFn.opt.ctrId,
-                                proId: ctrFn.opt.proId,
-                                workers: ctrFn.resArray.toString()
-                            },
-                            success: function (data) {
-                                var result = JSON.parse(data);
-                                if (result && result.success) {
-                                    tip.tipBox({text: "添加成功，请刷新后查看"}, true);
-                                    tip.mod.modal('hide');
-                                } else {
-                                    tip.tipBox({text: "添加失败"}, true);
-                                    tip.mod.modal('hide');
-                                }
-                            }
-                        }, function () {
-                            tip.mod.modal('hide');
-                        })
-                    });
                 }
             }, function () {
                 tip.mod.modal('hide');
+            })
+        });
+    },
+    addWorker: function (start, size) {
+        tip.tipMod({mod: 'wkAddMod',}, function () {
+            tip.mod.find(".worker-list").html('<span class="loading"></span>');
+            $.post(ctrFn.url.getResumes,{
+                keyword: $("#wkAddMod").find(".keyword-input").val(),
+                ctrId: ctrFn.opt.ctrId,
+                proId: ctrFn.opt.proId,
+                start: start ? start : 1,
+                size: size ? size : 16
+            }).then(function (data) {
+                ctrFn.wrkAcGet(data);
+            },function () {
+                tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
+            }).done(function () {
+                ctrFn.wrkSecFn();
+                ctrFn.wrkAddFn();
             })
         })
     }
