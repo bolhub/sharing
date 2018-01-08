@@ -177,11 +177,15 @@ public class ResumeController extends BaseController {
         }
         Resume destResume = resumeService.findResumeById(resumeId);
         if (destResume == null || StringUtils.isEmpty(destResume.getDestName())){
-
+            responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
+            return;
         }
-        File file = new File("D:/test.swf");
+        if (StringUtils.isEmpty(destResume.getFileType()) || !"swf".equals(destResume.getFileType())){
+            responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
+            return;
+        }
 
-        responseMsg(response, new Message<>(true, file.getCanonicalPath()));
+        responseMsg(response, new Message<>(true, config.SWF_SERVER_PATH + File.separator + destResume.getDestName()));
     }
 
     @RequestMapping(value = "findResums", method = RequestMethod.POST)

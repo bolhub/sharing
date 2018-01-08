@@ -14,6 +14,12 @@ public class Config {
     @Value("${SWFPath}")
     public String SWF_FILE_PATH;
 
+    @Value("{SWFServerPath}")
+    public String SWF_SERVER_PATH;
+
+    @Value("{SWFToolPath}")
+    public String SWF_TOOL_PATH;
+
     @Value("${openOfficePort}")
     public Integer OPEN_OFFICE_PORT;
 

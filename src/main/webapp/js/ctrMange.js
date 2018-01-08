@@ -445,6 +445,8 @@ var ctrFn = {
     },
     swfView: function () {
         $("#worker-center .glyphicon-eye-open").unbind().bind("click", function () {
+            var resId = $(this).parent("span").parent().parent().attr("resumeId");
+            console.log(resId+"----")
             tip.tipMod({
                 // text: '<div style="position: absolute; left: 50px; top: 10px;">\n' +
                 // '    <a id="viewerPlaceHolder" style="width: 820px; height: 650px; display: block"></a>\n' +
@@ -453,8 +455,9 @@ var ctrFn = {
                 '    <a id="viewerPlaceHolder" style="height: 400px"></a>\n' +
                 '    <div id="documentViewer" style="400px"></div>'
             }, function () {
-                 $.ajax({
+                $.ajax({
                     url: host + 'resume/previewDoc',
+                    data: {resId: resId},
                     type: 'GET',
                     success: function (result) {
                         if (!result)
@@ -626,7 +629,7 @@ var ctrFn = {
     addWorker: function (start, size) {
         tip.tipMod({mod: 'wkAddMod',}, function () {
             tip.mod.find(".worker-list").html('<span class="loading"></span>');
-            $.post(ctrFn.url.getResumes,{
+            $.post(ctrFn.url.getResumes, {
                 keyword: $("#wkAddMod").find(".keyword-input").val(),
                 ctrId: ctrFn.opt.ctrId,
                 proId: ctrFn.opt.proId,
@@ -634,7 +637,7 @@ var ctrFn = {
                 size: size ? size : 16
             }).then(function (data) {
                 ctrFn.wrkAcGet(data);
-            },function () {
+            }, function () {
                 tip.tipBox({type: 'err', title: '错误', text: "服务器故障！"}, true);
             }).done(function () {
                 ctrFn.wrkSecFn();
