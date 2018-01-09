@@ -325,4 +325,41 @@
         )
     </select>
 
+    <!-- 根据ID查询简历文件信息 -->
+    <select id="findDocById" resultType="Resume">
+        select
+        id,
+        file_name `fileName`,
+        file_type `fileType`,
+        file_path `filePath`,
+        dest_name `destName`,
+        hasSWF 'hasSwf'
+        from resume
+        where id=#{id}
+    </select>
+
+    <!-- 查询没有转变成SWF的doc文档 -->
+    <select id="waitTransSwf" resultType="Resume">
+        select
+        id,
+        file_name `fileName`,
+        file_type `fileType`,
+        file_path `filePath`,
+        dest_name `destName`
+        from resume
+        where (hasSWF is NULL OR hasSWF != 1) AND dest_name IS NOT NULL AND (file_type='doc' OR file_type='docx')
+        ORDER BY upload_time
+        limit #{size}
+    </select>
+
+    <!-- 批量更新SWF生成信息 -->
+    <update id="updateBatchSwf" parameterType="java.util.List">
+        UPDATE resume
+        set hasSWF=1
+        WHERE id IN
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
 </mapper>

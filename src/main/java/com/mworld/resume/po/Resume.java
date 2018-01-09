@@ -16,6 +16,7 @@ public class Resume {
     private String uploaderId;
     private Date uploadTime;
     private Privilege privilege;
+    private Integer hasSwf;
 
     public String getEducation() {
         return education;
@@ -119,5 +120,13 @@ public class Resume {
 
     public void setPrivilege(Privilege privilege) {
         this.privilege = privilege;
+    }
+
+    public Integer getHasSwf() {
+        return hasSwf;
+    }
+
+    public void setHasSwf(Integer hasSwf) {
+        this.hasSwf = hasSwf;
     }
 }

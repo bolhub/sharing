@@ -111,7 +111,7 @@
     <!--</task:scheduled-tasks>-->
 
     <contex:component-scan base-package="com.mworld.common.util"/>
-    <contex:component-scan base-package="com.mworld.common.quartz"/>
+    <contex:component-scan base-package="com.mworld.resume.quartz"/>
     <task:executor id="executor" pool-size="5"/>
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:annotation-driven executor="executor" scheduler="scheduler"/>

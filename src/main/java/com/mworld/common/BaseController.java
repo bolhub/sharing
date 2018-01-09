@@ -136,7 +136,7 @@ public class BaseController {
     }
 
     public String getTempFilePath(String dir) {
-        return Config.FILES_COB + dir;
+        return Config.FILES_UPLOAD_COB + dir;
     }
 
     public void download(HttpServletResponse response, File file, String downName) {

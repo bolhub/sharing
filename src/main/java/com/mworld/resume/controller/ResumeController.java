@@ -34,8 +34,6 @@ import java.util.zip.ZipOutputStream;
 @Controller
 @RequestMapping("/resume")
 public class ResumeController extends BaseController {
-    final static String RESUME_DOC_UPLOAD_PATH = "resumeFiles";
-
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private ResumeService resumeService;
@@ -45,7 +43,7 @@ public class ResumeController extends BaseController {
 
     @RequestMapping(value = "uploadResume", method = {RequestMethod.POST, RequestMethod.GET})
     public void upload(HttpServletRequest request, HttpServletResponse response) {
-        uploadOpt(request, RESUME_DOC_UPLOAD_PATH);
+        uploadOpt(request, config.RESUME_UPLOAD_PACKAGE);
     }
 
     @RequestMapping(value = "storeResume", method = RequestMethod.POST)
@@ -70,7 +68,7 @@ public class ResumeController extends BaseController {
             resume.setEducation(education.trim());
             resume.setGraduateTime(new SimpleDateFormat("yyyy-MM-dd").parse(graduate));
             resume.setUploaderId(request.getSession().getAttribute("login_userId").toString());
-            resume.setFilePath(getTempFilePath(RESUME_DOC_UPLOAD_PATH));
+            resume.setFilePath(getTempFilePath(config.RESUME_UPLOAD_PACKAGE));
             resume.setFileName(fileName);
             if (!StringUtils.isEmpty(getFileType(fileName)))
                 resume.setFileType(getFileType(fileName));
@@ -80,9 +78,9 @@ public class ResumeController extends BaseController {
             if (insert > 0) {
                 msg.setSuccess(true);
                 msg.setMsg("Save Success");
-                File file = new File(getTempFilePath(RESUME_DOC_UPLOAD_PATH) + File.separator + fileName);
+                File file = new File(getTempFilePath(config.RESUME_UPLOAD_PACKAGE) + File.separator + fileName);
                 if (file.exists()) {
-                    file.renameTo(new File(getTempFilePath(RESUME_DOC_UPLOAD_PATH + File.separator + destFileName)));
+                    file.renameTo(new File(getTempFilePath(config.RESUME_UPLOAD_PACKAGE + File.separator + destFileName)));
                 }
             }
         } catch (Exception e) {
@@ -171,16 +169,16 @@ public class ResumeController extends BaseController {
     @RequestMapping(value = "/previewDoc", method = RequestMethod.GET)
     public void previewDoc(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String resumeId = request.getParameter("resId");
-        if (StringUtils.isEmpty(resumeId)){
+        if (StringUtils.isEmpty(resumeId)) {
             responseMsg(response, new Message(false, NoticeConst.LACK_PARAMETERS));
             return;
         }
         Resume destResume = resumeService.findResumeById(resumeId);
-        if (destResume == null || StringUtils.isEmpty(destResume.getDestName())){
+        if (destResume == null || StringUtils.isEmpty(destResume.getDestName())) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        if (StringUtils.isEmpty(destResume.getFileType()) || !"swf".equals(destResume.getFileType())){
+        if (StringUtils.isEmpty(destResume.getFileType()) || !"swf".equals(destResume.getFileType())) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
@@ -302,13 +300,17 @@ public class ResumeController extends BaseController {
             }
 
             Calendar calendar = Calendar.getInstance();
-            String tmpFileDir = getTempFilePath("resumeCob" + File.separator + getLoginUser(request).getId()) + File.separator + (calendar.get(Calendar.YEAR)) + (calendar.get(Calendar.MONTH) + 1);
+            String tmpFilePkg = getLoginUser(request).getId() + File.separator + (calendar.get(Calendar.YEAR)) + (calendar.get(Calendar.MONTH) + 1);
+            String tmpFileDir = getTempFilePath(config.RESUME_UPLOAD_PACKAGE + File.separator + tmpFilePkg);
+//            String tmpFileDir = getTempFilePath(config.RESUME_UPLOAD_PACKAGE + File.separator + getLoginUser(request).getId()) + File.separator + (calendar.get(Calendar.YEAR)) + (calendar.get(Calendar.MONTH) + 1);
             File tmpFile = new File(tmpFileDir);
             if (!tmpFile.exists()) {
                 tmpFile.mkdirs();
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
-            String destName = getLoginUser(request).getId() + "_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
+            String destName = getLoginUser(request).getId().substring(1, 6) + "_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
+            if ("docx".equals(destName.substring(destName.lastIndexOf("."))))
+                destName = destName.substring(0, destName.length() - 1);
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
             ResumeRequestVo requestVo = new ResumeRequestVo();
@@ -316,8 +318,8 @@ public class ResumeController extends BaseController {
             requestVo.setDptId(dptId);
             requestVo.setDestName(destName);
             requestVo.setFileName(originName);
-            requestVo.setFileType(originName.substring(originName.lastIndexOf(".")));
-            requestVo.setFilePath(tmpFileDir);
+            requestVo.setFileType(originName.substring(originName.lastIndexOf(".") + 1));
+            requestVo.setFilePath(tmpFilePkg);
             requestVo.setEducation(education);
             requestVo.setMajor(major);
             requestVo.setGraduateTime(graduateTime);
@@ -353,22 +355,22 @@ public class ResumeController extends BaseController {
             return;
         }
         List<ResumeMapVo> list = resumeService.findResFiles(ids);
-        if (CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
         byte[] bt = new byte[1024];
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(config.TMP_ZIP_DIR));
-        for (ResumeMapVo vo : list){
+        for (ResumeMapVo vo : list) {
             if (StringUtils.isEmpty(vo.getDestName()))
                 continue;
-            File file = new File(config.FILES_COB + File.separator + vo.getDptName());
+            File file = new File(getTempFilePath(config.RESUME_UPLOAD_PACKAGE) + File.separator + vo.getFilePath() + File.separator + vo.getDptName());
             if (!file.exists())
                 continue;
             FileInputStream fis = new FileInputStream(file);
             out.putNextEntry(new ZipEntry(file.getName()));
             int len;
-            while ((len = fis.read(bt)) > 0){
+            while ((len = fis.read(bt)) > 0) {
                 out.write(bt, 0, len);
             }
             out.closeEntry();

@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.net.ConnectException;
+
+@Component
 public class DocConverter {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     private int port;
@@ -27,20 +29,22 @@ public class DocConverter {
     @Autowired
     private Config config;
 
+    public DocConverter() {
+        super();
+    }
+
     public DocConverter(String docPath) {
         init(docPath);
     }
 
     public void init(String docPath) {
         this.docPath = docPath;
-//        port = config.OPEN_OFFICE_PORT;
-//        swfToolsPath = config.SWF_FILE_PATH;
-        port = 8100;
-        swfToolsPath = "D:/SWFTools/";
+        port = config.OPEN_OFFICE_PORT;
+        swfToolsPath = config.SWF_TOOL_PATH;
         fileName = docPath.replaceAll("\\\\", "/").substring(docPath.lastIndexOf("/"), docPath.lastIndexOf("."));
         docFile = new File(docPath);
-        pdfFile = new File(fileName + ".pdf");
-        swfFile = new File(fileName + ".swf");
+        pdfFile = new File(config.PDF_TMP_PATH + fileName + ".pdf");
+        swfFile = new File(config.SWF_FILE_PATH + fileName + ".swf");
     }
 
     public void setDocPath(String docPath) {
@@ -50,6 +54,7 @@ public class DocConverter {
     public void setPort(int port) {
         this.port = port;
     }
+
 
     /**
      * @param swfToolsPath SWFTOOLS工具的安装目录

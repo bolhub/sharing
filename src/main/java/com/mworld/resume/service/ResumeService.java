@@ -37,4 +37,25 @@ public interface ResumeService {
     public Integer findUploadResumesCnt(String uploaderId, String keyword);
 
     public List<ResumeMapVo> findResFiles(String[] resIds);
+
+    /**
+     * 查找简历文件上传信息
+     * @param id
+     * @return
+     */
+    public Resume findDocById(String id);
+
+    /**
+     * 批量查询待生成SWF的WORD文档信息
+     * @param size
+     * @return
+     */
+    public List<Resume> waitTransSwf(Integer size);
+
+    /**
+     * 更新SWF生成状态
+     * @param list
+     * @return
+     */
+    public Integer updateBatchSwf(List<Resume> list);
 }

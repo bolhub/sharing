@@ -34,4 +34,25 @@ public interface ResumeDao {
 
     public List<ResumeMapVo> findResFiles(@Param("resIds") String[] resIds);
 
+    /**
+     * 根据ID查找简历文件上传信息
+     * @param id
+     * @return
+     */
+    public Resume findDocById(String id);
+
+    /**
+     * 批量查询待生成SWF的WORD文档信息
+     * @param size
+     * @return
+     */
+    public List<Resume> waitTransSwf(Integer size);
+
+    /**
+     * 更新SWF生成状态
+     * @param list
+     * @return
+     */
+    public Integer updateBatchSwf(List<Resume> list);
+
 }

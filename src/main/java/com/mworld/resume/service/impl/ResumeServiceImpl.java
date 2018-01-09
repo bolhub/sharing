@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -99,7 +102,32 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public List<ResumeMapVo> findResFiles(String[] resIds) {
         return resumeDao.findResFiles(resIds);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Resume findDocById(String id) {
+        if (StringUtils.isEmpty(id))
+            return null;
+        return resumeDao.findDocById(id);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Resume> waitTransSwf(Integer size) {
+        if (size == null || size < 1)
+            return null;
+        return resumeDao.waitTransSwf(size);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer updateBatchSwf(List<Resume> list) {
+        if (CollectionUtils.isEmpty(list))
+            return null;
+        return resumeDao.updateBatchSwf(list);
     }
 }
