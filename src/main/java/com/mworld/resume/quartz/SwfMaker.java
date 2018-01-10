@@ -25,7 +25,7 @@ public class SwfMaker {
     @Autowired
     private DocConverter docConverter;
 
-    @Scheduled(fixedRate = 50000)
+    @Scheduled(fixedRate = 50000000)
     public void doWordToSwf() {
         List<Resume> list = resumeService.waitTransSwf(config.MAX_TRANS_SWF_NU);
         if (CollectionUtils.isEmpty(list))
@@ -33,9 +33,8 @@ public class SwfMaker {
         List<Resume> result = new ArrayList<>();
         for (Resume resume : list) {
             docConverter.init(config.FILES_UPLOAD_COB + config.RESUME_UPLOAD_PACKAGE + File.separator + resume.getFilePath() + File.separator + resume.getDestName());
-            docConverter.setOutPath(config.SWF_FILE_PATH);
             if (docConverter.convert())
-                list.add(resume);
+                result.add(resume);
         }
         resumeService.updateBatchSwf(result);
 

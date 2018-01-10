@@ -2,6 +2,7 @@ package com.mworld.resume.controller;
 
 import com.mworld.common.*;
 import com.mworld.common.exception.NotLoginException;
+import com.mworld.common.util.DocConverter;
 import com.mworld.resume.po.Gender;
 import com.mworld.resume.po.Privilege;
 import com.mworld.resume.po.Resume;
@@ -40,6 +41,9 @@ public class ResumeController extends BaseController {
 
     @Autowired
     private Config config;
+
+    @Autowired
+    private DocConverter docConverter;
 
     @RequestMapping(value = "uploadResume", method = {RequestMethod.POST, RequestMethod.GET})
     public void upload(HttpServletRequest request, HttpServletResponse response) {
@@ -178,12 +182,19 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        if (StringUtils.isEmpty(destResume.getFileType()) || !"swf".equals(destResume.getFileType())) {
+        if (StringUtils.isEmpty(destResume.getFileType()) || !"doc".equals(destResume.getFileType())) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-
-        responseMsg(response, new Message<>(true, config.SWF_SERVER_PATH + File.separator + destResume.getDestName()));
+        if (destResume.getHasSwf() != null && destResume.getHasSwf() == 1) {
+            responseMsg(response, new Message<>(true, config.SWF_SERVER_PATH + File.separator + destResume.getDestName().replaceAll(".doc", ".swf")));
+        } else {
+            docConverter.init(config.FILES_UPLOAD_COB + config.RESUME_UPLOAD_PACKAGE + File.separator + destResume.getFilePath() + File.separator + destResume.getDestName());
+            List<Resume> result = new ArrayList<>();
+            if (docConverter.convert())
+                result.add(destResume);
+            resumeService.updateBatchSwf(result);
+        }
     }
 
     @RequestMapping(value = "findResums", method = RequestMethod.POST)
@@ -309,7 +320,7 @@ public class ResumeController extends BaseController {
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
             String destName = getLoginUser(request).getId().substring(1, 6) + "_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
-            if ("docx".equals(destName.substring(destName.lastIndexOf("."))))
+            if ("docx".equals(destName.substring(destName.lastIndexOf(".") + 1)))
                 destName = destName.substring(0, destName.length() - 1);
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
@@ -318,7 +329,7 @@ public class ResumeController extends BaseController {
             requestVo.setDptId(dptId);
             requestVo.setDestName(destName);
             requestVo.setFileName(originName);
-            requestVo.setFileType(originName.substring(originName.lastIndexOf(".") + 1));
+            requestVo.setFileType(destName.substring(destName.lastIndexOf(".") + 1));
             requestVo.setFilePath(tmpFilePkg);
             requestVo.setEducation(education);
             requestVo.setMajor(major);

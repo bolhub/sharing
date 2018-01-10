@@ -44,7 +44,7 @@ public class DocConverter {
         fileName = docPath.replaceAll("\\\\", "/").substring(docPath.lastIndexOf("/"), docPath.lastIndexOf("."));
         docFile = new File(docPath);
         pdfFile = new File(config.PDF_TMP_PATH + fileName + ".pdf");
-        swfFile = new File(config.SWF_FILE_PATH + fileName + ".swf");
+        swfFile = new File(config.SWF_FILE_PATH + fileName.substring(fileName.lastIndexOf("/")) + ".swf");
     }
 
     public void setDocPath(String docPath) {

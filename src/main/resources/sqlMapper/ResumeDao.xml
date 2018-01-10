@@ -238,6 +238,7 @@
         r.upload_time `uploadTime`,
         r.graduate_time `graduateTime`,
         r.dpt_id `dptId`,
+        r.hasSWF `hasSwf`,
         d.dpt_name `dptName`
         from resume r
         left join department d

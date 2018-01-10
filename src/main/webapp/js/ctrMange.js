@@ -470,7 +470,7 @@ var ctrFn = {
                                 config: {
                                     // SwfFile : escape(host + "js/swf/test.swf"),//编码设置
                                     // SwfFile: host + data.msg.replace("//", "/"),//编码设置
-                                    SwfFile: 'http://127.0.0.1:80/test.swf',
+                                    SwfFile: data.msg.replace("\\", "/"),
                                     Scale: 0.6,
                                     ZoomTransition: 'easeOut',//变焦过渡
                                     ZoomTime: 0.5,
