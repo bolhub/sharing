@@ -14,6 +14,10 @@ var tip = {
                 tip.mod.find(".sure-btn").text(init.sureBtnName);
             if (init.sureBtnHide)
                 tip.mod.find(".sure-btn").hide();
+            if (init.headerHide)
+                tip.mod.find(".modal-header").hide();
+            if (init.footerHide)
+                tip.mod.find(".modal-footer").hide();
         }
         if (typeof callback == "function")
             callback();

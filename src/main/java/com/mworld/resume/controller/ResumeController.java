@@ -142,6 +142,13 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message<>(false, NoticeConst.NO_DATA_NOTICE));
     }
 
+    /**
+     * 简历下载
+     * @param request
+     * @param response
+     * @param id
+     * @throws NotLoginException
+     */
     @RequestMapping(value = "{id}/resumeDown", method = RequestMethod.GET)
     public void resumeDown(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) throws NotLoginException {
         Message message = new Message();
@@ -154,22 +161,21 @@ public class ResumeController extends BaseController {
         if (!StringUtils.isEmpty(id)) {
             Resume resume = resumeService.findResume(id.trim());
             if (!Objects.isNull(resume)) {
-                File file = new File(resume.getFilePath() + File.separator + resume.getDestName());
+                File file = new File(getTempFilePath(config.RESUME_UPLOAD_PACKAGE) + File.separator + resume.getFilePath() + File.separator + resume.getDestName());
                 String downName = resume.getOwner() + "_简历" + new Date().getTime() + (StringUtils.isEmpty(resume.getFileType()) ? "" : "." + resume.getFileType());
                 download(response, file, downName);
             }
         }
     }
 
-    //    @RequestMapping(value = "{id}/previewDoc", method = RequestMethod.GET)
-//    public void previewDoc(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id){
-//        if (!StringUtils.isEmpty(id)) {
-//            Resume resume = resumeService.findResume(id.trim());
-//            if (!Objects.isNull(resume)) {
-//
-//            }
-//        }
-//    }
+
+    /**
+     * 简历预览---》转换成SWF
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @RequestMapping(value = "/previewDoc", method = RequestMethod.GET)
     public void previewDoc(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String resumeId = request.getParameter("resId");
@@ -182,7 +188,7 @@ public class ResumeController extends BaseController {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
-        if (StringUtils.isEmpty(destResume.getFileType()) || !"doc".equals(destResume.getFileType())) {
+        if (StringUtils.isEmpty(destResume.getFileType()) || (!"doc".equals(destResume.getFileType()) && !"docx".equals(destResume.getFileType()))) {
             responseMsg(response, new Message(false, NoticeConst.NO_DATA_NOTICE));
             return;
         }
@@ -271,6 +277,13 @@ public class ResumeController extends BaseController {
         responseMsg(response, new Message(true, NoticeConst.UPDATE_SUCCESS));
     }
 
+    /**
+     * 上传简历信息及文件
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @RequestMapping(value = "uploadRes", method = RequestMethod.POST)
     public void uploadRe(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -320,8 +333,8 @@ public class ResumeController extends BaseController {
             }
             String originName = new String(tmpFileItem.getName().getBytes("ISO-8859-1"), "UTF-8");
             String destName = getLoginUser(request).getId().substring(1, 6) + "_" + new Date().getTime() + originName.substring(tmpFileItem.getName().lastIndexOf("."));
-            if ("docx".equals(destName.substring(destName.lastIndexOf(".") + 1)))
-                destName = destName.substring(0, destName.length() - 1);
+//            if ("docx".equals(destName.substring(destName.lastIndexOf(".") + 1)))
+//                destName = destName.substring(0, destName.length() - 1);
             File destFile = new File(tmpFileDir, destName);
             FileUtils.copyInputStreamToFile(tmpFileItem.getInputStream(), destFile);
             ResumeRequestVo requestVo = new ResumeRequestVo();
@@ -329,7 +342,7 @@ public class ResumeController extends BaseController {
             requestVo.setDptId(dptId);
             requestVo.setDestName(destName);
             requestVo.setFileName(originName);
-            requestVo.setFileType(destName.substring(destName.lastIndexOf(".") + 1));
+            requestVo.setFileType(originName.substring(originName.lastIndexOf(".") + 1));
             requestVo.setFilePath(tmpFilePkg);
             requestVo.setEducation(education);
             requestVo.setMajor(major);

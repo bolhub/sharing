@@ -229,7 +229,6 @@ var ctrFn = {
                                 tip.tipBox({type: "warn", text: "修改失败"}, true);
                                 tip.mod.modal('hide');
                             }
-
                         },
                         error: function () {
                             tip.tipBox({type: 'err', text: "添加失败，服务器故障"}, true);
@@ -438,7 +437,6 @@ var ctrFn = {
                     }).done(function () {
                     ctrFn.wrkMdBtnFn();
                     ctrFn.wrkUpFn(workerId);
-
                 })
             })
         })
@@ -446,30 +444,24 @@ var ctrFn = {
     swfView: function () {
         $("#worker-center .glyphicon-eye-open").unbind().bind("click", function () {
             var resId = $(this).parent("span").parent().parent().attr("resumeId");
-            console.log(resId+"----")
+            console.log(resId + "----")
             tip.tipMod({
-                // text: '<div style="position: absolute; left: 50px; top: 10px;">\n' +
-                // '    <a id="viewerPlaceHolder" style="width: 820px; height: 650px; display: block"></a>\n' +
-                // '    <div id="documentViewer" style="width: 820px; height: 650px; display: block"></div>'
                 text: '<div>\n' +
-                '    <a id="viewerPlaceHolder" style="height: 400px"></a>\n' +
-                '    <div id="documentViewer" style="400px"></div>'
+                '    <a id="viewerPlaceHolder" style="height: 350px"></a>\n' +
+                '    <div id="documentViewer" style="400px"></div>',
+                headerHide: true,
+                footerHide: true
             }, function () {
-                $.ajax({
-                    url: host + 'resume/previewDoc',
-                    data: {resId: resId},
-                    type: 'GET',
-                    success: function (result) {
+                $.get(host + 'resume/previewDoc?resId=' + resId)
+                    .then(function (result) {
                         if (!result)
                             return;
                         var data = JSON.parse(result);
-                        console.log(data.msg.replace("//", "/"))
                         var fp = new FlexPaperViewer(
                             'FlexPaperViewer',
                             'viewerPlaceHolder', {
                                 config: {
                                     // SwfFile : escape(host + "js/swf/test.swf"),//编码设置
-                                    // SwfFile: host + data.msg.replace("//", "/"),//编码设置
                                     SwfFile: data.msg.replace("\\", "/"),
                                     Scale: 0.6,
                                     ZoomTransition: 'easeOut',//变焦过渡
@@ -483,7 +475,6 @@ var ctrFn = {
                                     MaxZoomSize: 3,//最大缩放
                                     SearchMatchAll: true,
                                     InitViewMode: 'Portrait',//初始显示模式(SinglePage,TwoPage,Portrait)
-
                                     ViewModeToolsVisible: true,//显示模式工具栏是否显示
                                     ZoomToolsVisible: true,//缩放工具栏是否显示
                                     NavToolsVisible: true,//跳页工具栏
@@ -493,8 +484,7 @@ var ctrFn = {
                                     localeChain: 'en_US'
                                 }
                             });
-                    }
-                })
+                    })
             })
         })
     },

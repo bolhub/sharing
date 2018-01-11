@@ -6,10 +6,14 @@ import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeException;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.mworld.common.Config;
+import com.mworld.common.exception.CopyDocException;
+import com.mworld.common.exception.MistakeDocTypeException;
+import com.mworld.common.exception.OutOfCapacityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -65,13 +69,29 @@ public class DocConverter {
 
     private void docToPdf() throws Exception {
         if (docFile.exists()) {
+            String type = docFile.getName().substring(docFile.getName().lastIndexOf(".") + 1);
+            if (!"doc".equals(type) && !"docx".equals(type)) {
+                throw new MistakeDocTypeException("文件类型异常！文件格式为：" + docFile.getName().substring(docFile.getName().lastIndexOf(".")), new Throwable("目前文档转码只支持.doc格式"));
+            }
+            if (docFile.length() > 1024 << 12)
+                throw new OutOfCapacityException("文件大小超出限制，当前文件大小为：" + docFile.length(), new Throwable("当前最大支持4M文档转换" + (1024 << 12)));
             if (!pdfFile.exists()) {
                 OpenOfficeConnection connection = new SocketOpenOfficeConnection(port);
 
                 try {
                     connection.connect();
                     DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-                    converter.convert(docFile, pdfFile);
+                    if ("docx".equals(type)) {
+                        File docFileDest = new File(docFile.getAbsolutePath().substring(0, docFile.getAbsolutePath().length() - 1));
+                        int copy = FileCopyUtils.copy(docFile, docFileDest);
+                        if (copy <=0)
+                            throw new CopyDocException("doc转成docx格式文档失败");
+                        else {
+                            converter.convert(docFileDest, pdfFile);
+                            docFileDest.delete();
+                        }
+                    } else
+                        converter.convert(docFile, pdfFile);
                     connection.disconnect();
                     logger.info(docFile.getName() + "成功转换成" + pdfFile.getPath());
                 } catch (ConnectException e) {

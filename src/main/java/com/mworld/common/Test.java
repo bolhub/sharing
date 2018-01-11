@@ -1,5 +1,8 @@
 package com.mworld.common;
 
+import com.mworld.common.exception.MistakeDocTypeException;
+import org.springframework.util.FileCopyUtils;
+
 import java.io.*;
 
 public class Test {
@@ -24,7 +27,7 @@ public class Test {
         return Integer.valueOf(i);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 //        Test test = new Test();
 //        test.doTest();;
 //        int i=0;
@@ -80,8 +83,8 @@ public class Test {
 //        }
 
 //        Process process = Runtime.getRuntime().exec("cmd /c dir d:");
-        String cmd = "D:/OpenOffice4/program/soffice.exe soffice \"-accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\" nologo -headless -nofirststartwizard";
-        Process process = Runtime.getRuntime().exec("cmd /c start " + cmd);
+//        String cmd = "D:/OpenOffice4/program/soffice.exe soffice \"-accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\" nologo -headless -nofirststartwizard";
+//        Process process = Runtime.getRuntime().exec("cmd /c start " + cmd);
 //        InputStream is = process.getInputStream();
 //        Scanner scanner = new Scanner(is);
 //        while (scanner.hasNextLine())
@@ -90,5 +93,22 @@ public class Test {
 //
 //        SwfMaker swfMaker = new SwfMaker();
 //        swfMaker.doWordToSwf();
+
+//        File file = new File("D:/test.swf");
+//        FileCopyUtils.copy(file,new File("D:/test1.swf"));
+//        FileCopyUtils.copy(file, new File(file.getAbsolutePath().substring(0,file.getAbsolutePath().length()-1)));
+//        System.out.println(file.getAbsolutePath() + "____" + file.getName());
+//        System.out.println(file.getName());
+//        System.out.println(file.exists());
+//        System.out.println(file.length()/1024);
+        System.out.println(1024 << 2);
+        System.out.println(1024 << 64);
+        System.out.println(1024 << 8);
+        System.out.println(1024 << 10);
+        System.out.println(1024 << 12);
+        System.out.println(6 & 3);
+        System.out.println(1024 | 2);
+        System.out.println(~1024);
+//        throw new MistakeDocTypeException("Error Type", new Throwable("Only DOC can be use"));
     }
 }
