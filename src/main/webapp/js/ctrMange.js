@@ -444,11 +444,11 @@ var ctrFn = {
     swfView: function () {
         $("#worker-center .glyphicon-eye-open").unbind().bind("click", function () {
             var resId = $(this).parent("span").parent().parent().attr("resumeId");
-            console.log(resId + "----")
+
             tip.tipMod({
                 text: '<div>\n' +
                 '    <a id="viewerPlaceHolder" style="height: 350px"></a>\n' +
-                '    <div id="documentViewer" style="400px"></div>',
+                '    <div id="documentViewer" style="350px"></div>',
                 headerHide: true,
                 footerHide: true
             }, function () {
