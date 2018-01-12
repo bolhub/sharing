@@ -83,8 +83,21 @@ public class Test {
 //        }
 
 //        Process process = Runtime.getRuntime().exec("cmd /c dir d:");
-//        String cmd = "D:/OpenOffice4/program/soffice.exe soffice \"-accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\" nologo -headless -nofirststartwizard";
-//        Process process = Runtime.getRuntime().exec("cmd /c start " + cmd);
+        String cmd = "\"D:/OpenOffice 4/program/soffice.exe\" soffice \"-accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\" -nologo -headless -nofirststartwizard";
+        Process process = Runtime.getRuntime().exec("cmd /c start " + cmd);
+//        System.out.println(process.exitValue());
+        /*Process process = Runtime.getRuntime().exec("sc query ggg");
+
+        InputStream inputStream = process.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "GBK"));
+        String temp = "", result = "";
+        while ((temp = bufferedReader.readLine())!=null){
+            result += temp;
+        }
+        bufferedReader.close();
+        inputStream.close();
+        System.out.println(result.equals(result.replaceAll("EnumQueryServicesStatus:OpenService 失败", "")));*/
+
 //        InputStream is = process.getInputStream();
 //        Scanner scanner = new Scanner(is);
 //        while (scanner.hasNextLine())
@@ -101,14 +114,14 @@ public class Test {
 //        System.out.println(file.getName());
 //        System.out.println(file.exists());
 //        System.out.println(file.length()/1024);
-        System.out.println(1024 << 2);
-        System.out.println(1024 << 64);
-        System.out.println(1024 << 8);
-        System.out.println(1024 << 10);
-        System.out.println(1024 << 12);
-        System.out.println(6 & 3);
-        System.out.println(1024 | 2);
-        System.out.println(~1024);
+//        System.out.println(1024 << 2);
+//        System.out.println(1024 << 64);
+//        System.out.println(1024 << 8);
+//        System.out.println(1024 << 10);
+//        System.out.println(1024 << 12);
+//        System.out.println(6 & 3);
+//        System.out.println(1024 | 2);
+//        System.out.println(~1024);
 //        throw new MistakeDocTypeException("Error Type", new Throwable("Only DOC can be use"));
     }
 }
